@@ -1,3 +1,6 @@
+
+
+
 void setup_28a(void){
 
          CMcon =0x07;             // puertoa como entrada salida digital.... apago los comparadores;
@@ -20,6 +23,18 @@ void setup_28a(void){
 }
 
 
+void oscilar_led (unsigned char dato ){
+
+           rb5_bit = dato;
+
+
+
+}
+
 void main() {
+void (*puntero_funcion)(unsigned char);
+puntero_funcion = oscilar_led;
+setup_28a();
+puntero_funcion(1);
 
 }

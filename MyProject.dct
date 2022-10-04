@@ -140,6 +140,7 @@ irp
 irp_bit
 longint2double
 longword2double
+main
 mul_16x16_s
 mul_16x16_u
 mul_32x32_fp
@@ -170,6 +171,7 @@ oerr_bit
 option_reg
 oscf
 oscf_bit
+oscilar_led
 pcl
 pclath
 pcon
@@ -263,6 +265,7 @@ setfdz32
 setfov32
 setfun32
 setiov3224
+setup_28a
 spbrg
 spen
 spen_bit
