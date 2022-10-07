@@ -1,3 +1,9 @@
 main
 	setup_28a
-	____DoIFC
+		UART1_Init
+interrupt
+	UART1_Read
+	memchr
+	UART1_Write_Text
+		UART1_Write
+	memset
