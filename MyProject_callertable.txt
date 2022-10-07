@@ -1,4 +1,6 @@
 main
+	__CC2DW
+		____DoICP
 	setup_28a
 		UART1_Init
 interrupt

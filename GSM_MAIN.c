@@ -2,6 +2,8 @@
 unsigned char buffer_uart [lengt_buffer];
 unsigned char contador_de_caracteres;
 unsigned char indice;
+unsigned char dato ;
+unsigned char flag_inicio = 0;
 void setup_28a(void){
 
          CMcon =0x07;             // puertoa como entrada salida digital.... apago los comparadores;
@@ -47,21 +49,30 @@ puntero_funcion(1);
 
 void interrupt (){
 
-     if (RCIF_BIT ==1 && contador_de_caracteres < lengt_buffer){
+   
+      dato = uart1_read();
+      if (dato == '@'){flag_inicio = 1;}
+     if ( contador_de_caracteres < lengt_buffer && flag_inicio == 1 ){
 
+        rb5_bit = 1;
         RCIF_BIT = 0;
-        buffer_uart[contador_de_caracteres] = uart1_read();
+        buffer_uart[contador_de_caracteres] = dato ;
         contador_de_caracteres ++;
+
 
         
      }
-     else {
+     if (contador_de_caracteres >= lengt_buffer) {
+          rb5_bit= 0 ;
           RCIF_BIT = 0;
           contador_de_caracteres = 0;
-          indice = memchr (buffer_uart,'y',lengt_buffer);
+          indice = memchr (buffer_uart,'@',lengt_buffer);
           delay_ms(100);
           uart1_write_text(indice);
           memset (buffer_uart,'x',lengt_buffer);
+          flag_inicio = 0;
 
      }
+     
+
 }

@@ -80,6 +80,7 @@ cren
 cren_bit
 csrc
 csrc_bit
+dato
 dc
 dc_bit
 delay_100ms
@@ -122,6 +123,7 @@ f
 ferr
 ferr_bit
 fixsign32
+flag_inicio
 fsr
 fsrptr
 get_fosc_khz
