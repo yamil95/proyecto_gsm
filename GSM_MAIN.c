@@ -11,14 +11,13 @@ unsigned char x = 0;
 unsigned char comando_1 [] = {"luz"};
 unsigned char comando_2 [] = {"alarma"};
 unsigned char *puntero_comando[2] = {comando_1,comando_2};
-unsigned char resultado_comparacion ;
-unsigned char *puntero_aux;
-unsigned char *puntero_aux_2;
+//unsigned char resultado_comparacion ;
+//unsigned char *puntero_aux;
+//unsigned char *puntero_aux_2;
 unsigned char parametro ;
 unsigned char cont2=0;
 
 
-void setup_28a(void);
 
 
 
@@ -65,7 +64,7 @@ void setup_28a(void){
 
 }
 void asignar_flags (unsigned char dato){
-     if (contador_de_caracteres == 0 && dato == '@')flag_inicio = 1;
+     if (contador_de_caracteres == 0 && dato == '@'){flag_inicio = 1; };
      if (contador_de_caracteres >=3 && dato == '*'){flag_fin =1; flag_inicio = 0;}
 
 
@@ -90,13 +89,15 @@ void cargar_buffer (unsigned char dato){
 
 }
 void (*ptr_funcion[2])(unsigned char )={control_luz,control_alarma};
+
+
 unsigned char  mapear_caracteres (unsigned char valor, unsigned char *indice){
 
       for (i = 0 ; i < sizeof (puntero_comando); i++){
 
                      for (x=0 ; x <valor ; x++){
-                              puntero_aux = puntero_comando[i][x];
-                              puntero_aux_2 = indice[x+1];
+                              //puntero_aux = puntero_comando[i][x];
+                              //puntero_aux_2 = indice[x+1];
                            if (puntero_comando[i][x] == indice[x+1]){
                                  cont2++;
                                if (cont2== valor){
@@ -136,15 +137,6 @@ unsigned char leer_buffer () {
 void main() {
 setup_28a();
 
-
-
-/*
-void (*puntero_funcion)(unsigned char);
-puntero_funcion = oscilar_led;
-setup_28a();
-puntero_funcion(1);
-*/
-
   }
 
 
@@ -159,9 +151,6 @@ void interrupt (){
       leer_buffer();
 
 
-          //delay_ms(100);
-          //uart1_write_text(indice);
-          //memset (buffer_uart,'x',lengt_buffer);
         /*
           for ( i= 0; i<=10 ; i++){
            eeprom_write(0x00 + i,indice[i+1]);

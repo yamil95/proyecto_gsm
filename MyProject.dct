@@ -243,8 +243,6 @@ ps2_bit
 psa
 psa_bit
 ptr_funcion
-puntero_aux
-puntero_aux_2
 puntero_comando
 r0
 r1
@@ -307,7 +305,6 @@ rcsta
 rd
 rd_bit
 res032
-resultado_comparacion
 rp0
 rp0_bit
 rp1
