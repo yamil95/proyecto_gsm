@@ -8,7 +8,7 @@ Value=0
 [ACTIVE_TAB]
 Value=GSM_MAIN.c
 [USE_EEPROM]
-Value=0
+Value=1
 [USE_HEAP]
 Value=0
 [HEAP_SIZE]
@@ -27,7 +27,8 @@ ActiveImageIndex=-1
 File0=GSM_MAIN.c
 Count=1
 [EEPROM]
-Count=0
+File0=data_eeprom.ihex
+Count=1
 [ACTIVE_COMMENTS_FILES]
 Count=0
 [OTHER_FILES]
@@ -43,15 +44,19 @@ Count=0
 [Useses]
 File0=UART
 File1=C_String
-Count=2
+File2=EEPROM
+File3=Conversions
+Count=4
 [EXPANDED_NODES]
 0=MyProject.mcppi
-Count=1
+1=Sources
+Count=2
 [LIB_EXPANDED_NODES]
 0=mikroE Libraries
 1=System Libraries
 92=C_String
-Count=3
+131=EEPROM
+Count=4
 [PROGRAMMER_TYPE]
 Value=mikroE mikroProg
 [CODEGRIP_OPTIONS]

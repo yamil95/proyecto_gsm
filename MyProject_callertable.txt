@@ -5,7 +5,15 @@ main
 		UART1_Init
 interrupt
 	UART1_Read
-	memchr
-	UART1_Write_Text
-		UART1_Write
-	memset
+	asignar_flags
+	cargar_buffer
+	leer_buffer
+		memchr
+		buscar_prefijo
+		mapear_caracteres
+			convertir_string_a_numero
+			Mul_8X8_U
+			____DoIFC
+			memset
+		UART1_Write_Text
+			UART1_Write
