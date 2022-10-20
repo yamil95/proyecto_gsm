@@ -1,5 +1,5 @@
 #line 1 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
-
+#line 49 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
 unsigned char buffer_uart [ 20 ];
 unsigned char contador_de_caracteres;
 unsigned char *indice;
@@ -12,16 +12,9 @@ unsigned char x = 0;
 unsigned char comando_1 [] = {"luz"};
 unsigned char comando_2 [] = {"alarma"};
 unsigned char *puntero_comando[2] = {comando_1,comando_2};
-
-
-
 unsigned char parametro ;
 unsigned char cont2=0;
-
-
-
-
-
+#line 74 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
 void control_luz(unsigned char valor_luz){
 
  rb5_bit = valor_luz;
@@ -150,5 +143,5 @@ void interrupt (){
  asignar_flags(dato);
  cargar_buffer(dato);
  leer_buffer();
-#line 167 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
+#line 217 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
  }
