@@ -68,9 +68,7 @@ unsigned char cont2=0;
 
 
 
-
-
-
+/////////////////////////////////////////////////////////////////////////////////
 void control_luz(unsigned char valor_luz){
 
          rb5_bit = valor_luz;
@@ -80,8 +78,24 @@ void control_alarma(unsigned char valor_alarma){
 
          rb4_bit = valor_alarma;
 }
-
+/////////////////////////////////////////////////////////////////////////////////
 unsigned char buscar_prefijo (unsigned char *buffer ,unsigned char caracter){
+
+/*
+Proposito : Esta funcion esta encargada de recibir un puntero a cadena y buscar dentro de esa cadena el caracter pasado por parametro.
+            cuando lo encuentra me va retornar el valor de un contador que se incrementa mientras busca de forma secuencial ese caracter.
+            
+            ejemplo :  "@YAMIL_1" esta funcion me va retornar el valor "5"
+            
+Precondicion: ninguna
+
+parametros:
+            *buffer : Puede ser un puntero a cadena o una cadena
+            caracter : caracter a buscar dentro del buffer
+
+Return : valor entero entre 0 y 255 correspondiente a la posicion donde se encuentre el caracter dentro del buffer
+*/
+
 
 unsigned char contador_de_letras = 0;
 
@@ -92,7 +106,7 @@ unsigned char contador_de_letras = 0;
 
 }
 
-
+/////////////////////////////////////////////////////////////////////////////////
 void setup_28a(void){
 
          CMcon =0x07;             // puertoa como entrada salida digital.... apago los comparadores;
@@ -113,19 +127,62 @@ void setup_28a(void){
 
 
 }
+/////////////////////////////////////////////////////////////////////////////////
 void asignar_flags (unsigned char dato){
+/*
+proposito: Esta funcion se encarga de triggerear el inicio y fin de almacenamiento de caracteres en el buffer .
+           Como lo hace ?
+                --- imagine que le llegan al puerto serie los siguientes caracteres ---
+                    "123455abcd@yamil1234*"
+           Como vera hay 2 caracteres especiales el arroba "@" y el asterisco "*"
+           _El caracter arroba "@" es el que se encarga de buscar esta funcion asignar flag en primera instancia , porque ?
+           para poder iniciar el almacenamiento de los caracteres que si nos importan que son los que estan a partir del caractere
+           arroba, de lo contrario tendriamos que almacenar todo lo que nos llegue y deberiamos tener un buffer muy grande.
+           _El caracter asterisco "*" esta funcion se encarga de asociarlo como caracter de finalizacion de almacenamiento , adicionalmente
+           cuando se encuentra el caracter asterisco tambien se reinicia el flag_inicio que para poder reiniciar el ciclo de almacenamiento
+           nuevamente
+
+precondicion: Esta funcion debe estar ubicada dentro de la funcion de sistema  interrupt() y tener  el micro con los bits GIE Y PIE habilitados
+
+parametros : dato puede tomar valores como "@" y  "*" pero pueden ser modificados de acuerdo a la necesidad inherente a la aplicacion
+           
+*/
+
      if (contador_de_caracteres == 0 && dato == '@'){flag_inicio = 1; };
      if (contador_de_caracteres >=3 && dato == '*'){flag_fin =1; flag_inicio = 0;}
 
 
 }
+/////////////////////////////////////////////////////////////////////////////////
 unsigned char convertir_string_a_numero (unsigned char caracter){
 
+/*
+Proposito: convertir caracter a valor entero,  esta funcion esta diseñada para recibir como parametro dos tipos de valores {0,1}
+           que corresponden a activar o desactivar una salida del puerto b
+
+precondicion: La funcion esta asociada a la funcion mapear caracteres , asi que debe estar ok esa funcion para poder ejecutar esta
+
+parametros : "0", "1"
+
+return : valores del tipo char 0 y 1
+*/
     if (caracter == 49)return 1;
     if (caracter == 48) return 0;
 }
-
+/////////////////////////////////////////////////////////////////////////////////
 void cargar_buffer (unsigned char dato){
+
+/*
+  Proposito : Esta funcion se ejecuta previo a la de asignacion de flags cuando detecta el caracter de inicio .
+              Cada vez que llega un nuevo caracter se encarga de verificar que el contador de caracteres no exceda el del tamaño del buffer
+              y lo va almacenando en el buffer e incrementando el contador de caracteres
+
+  precondicion : Se tiene que ejecutar primero la funcion asignar flag
+  
+  parametros : ninguno
+  
+  Return : ninguno
+*/
 
        if ( contador_de_caracteres < lengt_buffer && flag_inicio == 1 ){
 
@@ -138,10 +195,28 @@ void cargar_buffer (unsigned char dato){
      }
 
 }
+/////////////////////////////////////////////////////////////////////////////////
+/*
+vector de puntero a funciones que contiene las funciones que controlan los puertos
+*/
 void (*ptr_funcion[2])(unsigned char )={control_luz,control_alarma};
 
+/////////////////////////////////////////////////////////////////////////////////
 
 unsigned char  mapear_caracteres (unsigned char valor, unsigned char *indice){
+
+/*
+  Proposito : Esta funcion se encarga de recibir un parametro valor el cual es un valor numerico que indica cuantas letras tiene que matchear
+              entre el valor del buffer y el valor de alguno de los comandos almacenados en el microcontrolado
+              Ejemplo :
+                             buffer_uart = "@alarma_1*"
+                             comando_1 = "luz"
+                             comando_2 = "alarma"
+                             valor = 6
+              Como valor es 6 que corresponde a las 6 letras {"alarma"} dentro del buffer_uart , esta funcion va matchear con el comando_2
+              una vez que matchea , ejecuta la funcion asociada a dicho comando despues limpia el buffer y limpia el flag_fin
+
+*/
 
       for (i = 0 ; i < sizeof (puntero_comando); i++){
 
@@ -166,6 +241,18 @@ unsigned char  mapear_caracteres (unsigned char valor, unsigned char *indice){
              return 0;
 }
 unsigned char leer_buffer () {
+
+/*
+  Proposito: Esta funcion se encarga de segmentar el buffer a partir del caracter de inicio "@" y luego de forma escalonada se van a ejecutar
+  las funciones buscar_prefijo y mapear caracteres que son las encargadas de realizar la validacion y posterior ejecucion de los comandos
+  asociados a la cadena recibida en el buffer
+  
+  Precondicion: El buffer se tiene q haber llenado y el flag de fin tiene que estar en 1, esta funcion tiene que estar dentro de la funcion interrupt() de sistema
+  
+  Parametros: Ninguno
+  
+  Return : Ninguno
+*/
       
       if (flag_fin ) {
           RCIF_BIT = 0;
@@ -192,26 +279,9 @@ setup_28a();
 
 void interrupt (){
 
-
-
       dato =  uart1_read();
 
       asignar_flags(dato);
       cargar_buffer(dato);
       leer_buffer();
-
-
-        /*
-          for ( i= 0; i<=10 ; i++){
-           eeprom_write(0x00 + i,indice[i+1]);
-           delay_ms(10);
-
-          }
-          for ( i= 0; i<=10 ; i++){
-           uart1_write (eeprom_read(i));
-           delay_ms(100);
-
-          }
-          */
-
      }

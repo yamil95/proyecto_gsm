@@ -14,7 +14,15 @@ unsigned char comando_2 [] = {"alarma"};
 unsigned char *puntero_comando[2] = {comando_1,comando_2};
 unsigned char parametro ;
 unsigned char cont2=0;
-#line 74 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
+
+
+
+
+
+
+
+
+
 void control_luz(unsigned char valor_luz){
 
  rb5_bit = valor_luz;
@@ -26,7 +34,7 @@ void control_alarma(unsigned char valor_alarma){
 }
 
 unsigned char buscar_prefijo (unsigned char *buffer ,unsigned char caracter){
-
+#line 100 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
 unsigned char contador_de_letras = 0;
 
  while (buffer[contador_de_letras+1] != caracter){
@@ -57,20 +65,23 @@ void setup_28a(void){
 
 
 }
+
 void asignar_flags (unsigned char dato){
+#line 151 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
  if (contador_de_caracteres == 0 && dato == '@'){flag_inicio = 1; };
  if (contador_de_caracteres >=3 && dato == '*'){flag_fin =1; flag_inicio = 0;}
 
 
 }
-unsigned char convertir_string_a_numero (unsigned char caracter){
 
+unsigned char convertir_string_a_numero (unsigned char caracter){
+#line 169 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
  if (caracter == 49)return 1;
  if (caracter == 48) return 0;
 }
 
 void cargar_buffer (unsigned char dato){
-
+#line 187 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
  if ( contador_de_caracteres <  20  && flag_inicio == 1 ){
 
  RCIF_BIT = 0;
@@ -82,11 +93,13 @@ void cargar_buffer (unsigned char dato){
  }
 
 }
+#line 202 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
 void (*ptr_funcion[2])(unsigned char )={control_luz,control_alarma};
 
 
-unsigned char mapear_caracteres (unsigned char valor, unsigned char *indice){
 
+unsigned char mapear_caracteres (unsigned char valor, unsigned char *indice){
+#line 221 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
  for (i = 0 ; i < sizeof (puntero_comando); i++){
 
  for (x=0 ; x <valor ; x++){
@@ -110,7 +123,7 @@ unsigned char mapear_caracteres (unsigned char valor, unsigned char *indice){
  return 0;
 }
 unsigned char leer_buffer () {
-
+#line 257 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
  if (flag_fin ) {
  RCIF_BIT = 0;
  contador_de_caracteres = 0;
@@ -136,12 +149,9 @@ setup_28a();
 
 void interrupt (){
 
-
-
  dato = uart1_read();
 
  asignar_flags(dato);
  cargar_buffer(dato);
  leer_buffer();
-#line 217 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
  }
