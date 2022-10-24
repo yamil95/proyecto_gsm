@@ -45,7 +45,7 @@ cont_2: Se encarga de contabilizar los valores recibidos como comandos por el pu
 
 */
 
-#define lengt_buffer 20
+#define lengt_buffer 10
 unsigned char buffer_uart [lengt_buffer];
 unsigned char contador_de_caracteres;
 unsigned char *indice;
@@ -108,18 +108,18 @@ unsigned char contador_de_letras = 0;
 
 /////////////////////////////////////////////////////////////////////////////////
 void setup_28a(void){
-
+         uart1_init(9600);
          CMcon =0x07;             // puertoa como entrada salida digital.... apago los comparadores;
          TRISB =0b00000010;
          TRISA =0b00000000;
          PORTA =0X00;
          PORTB = 0X00;
 
-
-          uart1_init(9600);
-          GIE_BIT =1;  // HABILITO LAS INTERRUPCIONES GLOBALES
-          PEIE_BIT =1;  // HABILITO LAS INTERRUPCIONES DE LOS PERIFERICOS
-          RCIE_BIT =1;    // HABILITO LA INTERRUPCION DE "LLEGO UN DATO"
+         GIE_BIT =1;  // HABILITO LAS INTERRUPCIONES GLOBALES
+         PEIE_BIT =1;  // HABILITO LAS INTERRUPCIONES DE LOS PERIFERICOS
+         RCIE_BIT =1;    // HABILITO LA INTERRUPCION DE "LLEGO UN DATO"
+         rb5_bit = eeprom_read (0);
+         rb4_bit = eeprom_read(1);
          //TXIE_BIT =1;
          //TXEN_BIT =1;
          //TMR1IE_bit=0;            // deshabilito interrupcion del timer1
@@ -148,7 +148,7 @@ parametros : dato puede tomar valores como "@" y  "*" pero pueden ser modificado
            
 */
 
-     if (contador_de_caracteres == 0 && dato == '@'){flag_inicio = 1; };
+     if (contador_de_caracteres == 0 && dato == '@'){flag_inicio = 1; uart1_write(dato); }
      if (contador_de_caracteres >=3 && dato == '*'){flag_fin =1; flag_inicio = 0;}
 
 
@@ -192,6 +192,7 @@ void cargar_buffer (unsigned char dato){
 
 
 
+
      }
 
 }
@@ -229,6 +230,7 @@ unsigned char  mapear_caracteres (unsigned char valor, unsigned char *indice){
                                   cont2=0;
                                   parametro = indice[valor +2];
                                   parametro = convertir_string_a_numero(parametro);
+                                  eeprom_write(i,parametro);
                                   ptr_funcion[i](parametro);
                                   memset (buffer_uart,'0',lengt_buffer);
                                   flag_fin = 0;
@@ -280,7 +282,7 @@ setup_28a();
 void interrupt (){
 
       dato =  uart1_read();
-
+      
       asignar_flags(dato);
       cargar_buffer(dato);
       leer_buffer();
