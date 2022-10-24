@@ -18,5 +18,3 @@ interrupt
 			Mul_8X8_U
 			____DoIFC
 			memset
-		UART1_Write_Text
-			UART1_Write

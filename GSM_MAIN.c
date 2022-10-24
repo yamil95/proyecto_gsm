@@ -261,12 +261,8 @@ unsigned char leer_buffer () {
           contador_de_caracteres = 0;
           indice = memchr (buffer_uart,'@',lengt_buffer);
           valor = buscar_prefijo (indice,'_');
+          mapear_caracteres (valor,indice);
 
-          if (mapear_caracteres (valor,indice)== 1)
-          {
-           uart1_write_text(buffer_uart);
-          }
-          else {return 0;}
       
       
       }
@@ -274,9 +270,9 @@ unsigned char leer_buffer () {
 }
 
 void main() {
-setup_28a();
+     setup_28a();
 
-  }
+     }
 
 
 void interrupt (){
