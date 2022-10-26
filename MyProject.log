@@ -1,13 +1,13 @@
-0	1	mikroCPIC1618.exe -MSF -DBG -pP16F628A -DL -O11111114 -fo4 -EH"C:\Users\feyam\Desktop\gsm\data_eeprom.ihex" -N"C:\Users\feyam\Desktop\gsm\MyProject.mcppi" -SP"C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\Defs\" -SP"C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\Uses\P16\" -SP"C:\Users\feyam\Desktop\gsm\" -IP"C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\Uses\P16\" "GSM_MAIN.c" "__Lib_Math.mcl" "__Lib_MathDouble.mcl" "__Lib_System.mcl" "__Lib_Delays.mcl" "__Lib_CString.mcl" "__Lib_Conversions.mcl" "__Lib_EEPROM.mcl" "__Lib_UART_b21.mcl"	 
+0	1	mikroCPIC1618.exe -MSF -DBG -pP16F628A -DL -O11111114 -fo4 -EH"C:\Users\feyam\Desktop\gsm\data_eeprom.ihex" -N"C:\Users\feyam\Desktop\gsm\MyProject.mcppi" -SP"C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\Defs\" -SP"C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\Uses\P16\" -SP"C:\Users\feyam\Desktop\gsm\" -IP"C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\Uses\P16\" "GSM_MAIN.c" "__Lib_Math.mcl" "__Lib_MathDouble.mcl" "__Lib_System.mcl" "__Lib_Delays.mcl" "__Lib_CType.mcl" "__Lib_CString.mcl" "__Lib_CStdlib.mcl" "__Lib_Conversions.mcl" "__Lib_EEPROM.mcl" "__Lib_UART_b21.mcl"	 
 hint: 0	1139	Available RAM: 208 [bytes], Available ROM: 2048 [bytes]	 
 diagnostics: 0	122	Compilation Started	GSM_MAIN.c
-warning: 111	1509	Generated baud rate is 9615 bps (error = 0.16 percent)	GSM_MAIN.c
-warning: 270	1503	Result is not defined in function: 'leer_buffer'	GSM_MAIN.c
-diagnostics: 285	123	Compiled Successfully	GSM_MAIN.c
-diagnostics: 0	127	All files Compiled in 46 ms	 
-hint: 0	1144	Used RAM (bytes): 55 (26%)  Free RAM (bytes): 153 (74%)	Used RAM (bytes): 55 (26%)  Free RAM (bytes): 153 (74%)
-hint: 0	1144	Used ROM (program words): 545 (27%)  Free ROM (program words): 1503 (73%)	Used ROM (program words): 545 (27%)  Free ROM (program words): 1503 (73%)
+warning: 117	1509	Generated baud rate is 9615 bps (error = 0.16 percent)	GSM_MAIN.c
+warning: 312	1503	Result is not defined in function: 'leer_buffer'	GSM_MAIN.c
+diagnostics: 342	123	Compiled Successfully	GSM_MAIN.c
+diagnostics: 0	127	All files Compiled in 63 ms	 
+hint: 0	1144	Used RAM (bytes): 81 (39%)  Free RAM (bytes): 127 (61%)	Used RAM (bytes): 81 (39%)  Free RAM (bytes): 127 (61%)
+hint: 0	1144	Used ROM (program words): 847 (41%)  Free ROM (program words): 1201 (59%)	Used ROM (program words): 847 (41%)  Free ROM (program words): 1201 (59%)
 diagnostics: 0	125	Project Linked Successfully	MyProject.mcppi
-diagnostics: 0	128	Linked in 32 ms	 
-diagnostics: 0	129	Project 'MyProject.mcppi' completed: 94 ms	 
-diagnostics: 0	103	Finished successfully: 24 oct. 2022, 18:08:27	MyProject.mcppi
+diagnostics: 0	128	Linked in 15 ms	 
+diagnostics: 0	129	Project 'MyProject.mcppi' completed: 109 ms	 
+diagnostics: 0	103	Finished successfully: 26 oct. 2022, 16:55:00	MyProject.mcppi

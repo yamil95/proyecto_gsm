@@ -45,7 +45,7 @@ cont_2: Se encarga de contabilizar los valores recibidos como comandos por el pu
 
 */
 
-#define lengt_buffer 10
+#define lengt_buffer 20
 unsigned char buffer_uart [lengt_buffer];
 unsigned char contador_de_caracteres;
 unsigned char *indice;
@@ -57,9 +57,14 @@ unsigned char i =0;
 unsigned char x = 0;
 unsigned char comando_1 [] = {"luz"};
 unsigned char comando_2 [] = {"alarma"};
-unsigned char *puntero_comando[2] = {comando_1,comando_2};
+unsigned char comando_3 [] = {"time"};
+unsigned char *puntero_comando[3] = {comando_1,comando_2,comando_3};
 unsigned char parametro ;
 unsigned char cont2=0;
+
+//pruebas de concepto///
+unsigned int conversion = 0;
+unsigned char buffer_conversion[2];
 
 
 //unsigned char resultado_comparacion ;
@@ -77,6 +82,7 @@ void control_luz(unsigned char valor_luz){
 void control_alarma(unsigned char valor_alarma){
 
          rb4_bit = valor_alarma;
+         //ra0_bit = valor_alarma;
 }
 /////////////////////////////////////////////////////////////////////////////////
 unsigned char buscar_prefijo (unsigned char *buffer ,unsigned char caracter){
@@ -118,8 +124,15 @@ void setup_28a(void){
          GIE_BIT =1;  // HABILITO LAS INTERRUPCIONES GLOBALES
          PEIE_BIT =1;  // HABILITO LAS INTERRUPCIONES DE LOS PERIFERICOS
          RCIE_BIT =1;    // HABILITO LA INTERRUPCION DE "LLEGO UN DATO"
-         rb5_bit = eeprom_read (0);
-         rb4_bit = eeprom_read(1);
+
+         PIR1.TMR1IF = 0;
+         TMR1H = 0x00;
+         TMR1L = 0x00;
+         T1CON.TMR1CS = 0;
+         T1CON.T1CKPS0 = 1;
+         T1CON.T1CKPS1 = 1;
+         PIE1.TMR1IE = 1 ;
+         T1CON.TMR1ON = 1 ;
          //TXIE_BIT =1;
          //TXEN_BIT =1;
          //TMR1IE_bit=0;            // deshabilito interrupcion del timer1
@@ -255,14 +268,43 @@ unsigned char leer_buffer () {
   
   Return : Ninguno
 */
-      
+
+unsigned char i;
+unsigned char cont_buff=0;
+unsigned char cont_eeprom =10;
       if (flag_fin ) {
           RCIF_BIT = 0;
           contador_de_caracteres = 0;
-          indice = memchr (buffer_uart,'@',lengt_buffer);
-          valor = buscar_prefijo (indice,'_');
-          mapear_caracteres (valor,indice);
+          //uart1_write_text(buffer_uart);
+          //delay_ms(100);
+          indice = memchr (buffer_uart,':',lengt_buffer);
+          if (indice != 0){
+                  //uart1_write_text(indice_time);
+                  for (i=1 ; i < 12 ; i++) {
+                     if (isdigit(indice [i]) && cont_buff <2 ){
+                        buffer_conversion[cont_buff]=indice[i];
+                        cont_buff++;
+                     }
+                     if (cont_buff ==2){
+                     conversion = atoi(buffer_conversion);
+                     eeprom_write(cont_eeprom,conversion);
+                     delay_ms(50);
+                     memset(buffer_conversion,'0',2);
+                     cont_eeprom ++;
+                     cont_buff =0;
+                     }
+                     if (cont_eeprom == 14){
+                     cont_eeprom =10;
 
+                     }
+                  }
+                  memset (buffer_uart,'0',lengt_buffer);
+                  flag_fin = 0;
+          }
+          else {
+            valor = buscar_prefijo (buffer_uart,'_');
+            mapear_caracteres (valor,buffer_uart);
+           }
       
       
       }
@@ -274,12 +316,28 @@ void main() {
 
      }
 
-
 void interrupt (){
 
       dato =  uart1_read();
-      
       asignar_flags(dato);
       cargar_buffer(dato);
       leer_buffer();
+      
+      if (tmr1if_bit){
+          tmr1if_bit =0;
+           //rb5_bit = eeprom_read (0);
+           //rb4_bit = eeprom_read(1);
+           rb7_bit ^=1;
+           TMR1H = 0x00;
+           TMR1L = 0x00;
+           //gie_bit =0;
+           tmr1on_bit =0;
+
+           uart1_write (eeprom_read(10));
+           //gie_bit =1;
+           tmr1on_bit =1;
+
+
+
+      }
      }

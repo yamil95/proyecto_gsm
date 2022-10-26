@@ -3,7 +3,6 @@ main
 		____DoICP
 	setup_28a
 		UART1_Init
-		EEPROM_Read
 interrupt
 	UART1_Read
 	asignar_flags
@@ -11,6 +10,12 @@ interrupt
 	cargar_buffer
 	leer_buffer
 		memchr
+		isdigit
+		atoi
+			isdigit
+			Mul_16X16_U
+		EEPROM_Write
+		memset
 		buscar_prefijo
 		mapear_caracteres
 			convertir_string_a_numero
@@ -18,3 +23,5 @@ interrupt
 			Mul_8X8_U
 			____DoIFC
 			memset
+	EEPROM_Read
+	UART1_Write

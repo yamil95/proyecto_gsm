@@ -46,7 +46,9 @@ File0=UART
 File1=C_String
 File2=EEPROM
 File3=Conversions
-Count=4
+File4=C_Stdlib
+File5=C_Type
+Count=6
 [EXPANDED_NODES]
 0=MyProject.mcppi
 1=Sources
