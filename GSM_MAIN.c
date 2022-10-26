@@ -332,7 +332,6 @@ void interrupt (){
            TMR1L = 0x00;
            //gie_bit =0;
            tmr1on_bit =0;
-
            uart1_write (eeprom_read(10));
            //gie_bit =1;
            tmr1on_bit =1;
