@@ -4,11 +4,18 @@ main
 	setup_28a
 		UART1_Init
 interrupt
+	UART1_Data_Ready
 	UART1_Read
 	asignar_flags
-		UART1_Write
 	cargar_buffer
 	leer_buffer
+		validar_hora
+			isdigit
+			atoi
+				isdigit
+				Mul_16X16_U
+			memset
+			EEPROM_Read
 		memchr
 		isdigit
 		atoi
@@ -23,5 +30,3 @@ interrupt
 			Mul_8X8_U
 			____DoIFC
 			memset
-	EEPROM_Read
-	UART1_Write

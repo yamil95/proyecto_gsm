@@ -49,6 +49,7 @@ cont_2: Se encarga de contabilizar los valores recibidos como comandos por el pu
 unsigned char buffer_uart [lengt_buffer];
 unsigned char contador_de_caracteres;
 unsigned char *indice;
+unsigned char *indice_rtc;
 unsigned char valor ;
 unsigned char dato;
 unsigned char flag_inicio = 0;
@@ -61,10 +62,15 @@ unsigned char comando_3 [] = {"time"};
 unsigned char *puntero_comando[3] = {comando_1,comando_2,comando_3};
 unsigned char parametro ;
 unsigned char cont2=0;
+unsigned char llego;
+unsigned char activado =0;
 
 //pruebas de concepto///
 unsigned int conversion = 0;
+unsigned char buffer_conversion_2[2];
+unsigned char contador_timer=0;
 unsigned char buffer_conversion[2];
+unsigned char conversion_2 [4] = {0,0};
 
 
 //unsigned char resultado_comparacion ;
@@ -161,8 +167,8 @@ parametros : dato puede tomar valores como "@" y  "*" pero pueden ser modificado
            
 */
 
-     if (contador_de_caracteres == 0 && dato == '@'){flag_inicio = 1; uart1_write(dato); }
-     if (contador_de_caracteres >=3 && dato == '*'){flag_fin =1; flag_inicio = 0;}
+     if (contador_de_caracteres == 0 && (dato == '@' || dato == ',')){flag_inicio = 1;  }
+     if (contador_de_caracteres >=3 && (dato == '*' || dato == '+') ){flag_fin =1; flag_inicio = 0; }
 
 
 }
@@ -255,6 +261,70 @@ unsigned char  mapear_caracteres (unsigned char valor, unsigned char *indice){
 
              return 0;
 }
+
+
+unsigned char validar_hora (unsigned char *buffer){
+
+unsigned char conversion_array [2];
+unsigned char i =0;
+unsigned char contador =0;
+unsigned char contador_ok = 0;
+unsigned char dato_eeprom =0;
+
+           if (buffer [0] == ','){
+           
+                for   (i =1 ; i <6 ; i++){
+
+                      if (isdigit(buffer[i])  && contador <2 ){
+                         buffer_conversion_2[contador]=buffer[i];
+                         contador++;
+
+                      }
+                      if (contador == 2 ){
+                          conversion_2[contador_ok] = atoi(buffer_conversion_2);
+                          memset(buffer_conversion,'0',2);
+                          contador_ok++;
+                          contador =0;
+                      }
+                      if  (contador_ok == 2 && activado ==0){
+                          contador_ok =0;
+                          for (i = 0; i <2 ; i++){
+                              if (conversion_2[i] == eeprom_read(10+i)){
+                                 contador_ok++;
+                                 delay_ms(50);
+                              }
+                              if (contador_ok ==2){contador_ok =0; rb5_bit =1; flag_fin = 0; activado=1; memset(buffer_uart,'0',lengt_buffer); break;}
+                          }
+
+                       }
+                       if  (contador_ok == 2 && activado ==1){
+                            contador_ok =0;
+                            for (i = 0; i <2 ; i++){
+                                if (conversion_2[i] == eeprom_read(12+i)){
+                                   contador_ok++;
+                                   delay_ms(50);
+                                }
+                                if (contador_ok ==2){contador_ok =0; rb5_bit =0; flag_fin = 0; activado=0;memset(buffer_uart,'0',lengt_buffer); break;}
+                            }
+                          }
+
+                        /*
+                        uart1_write_text("ok\r\n");
+                        delay_ms(100);
+                        uart1_write(eeprom_read(10));
+                        delay_ms(100);
+                        uart1_write(conversion_2[0]);
+                        */
+
+                    }
+              }
+              
+
+           
+
+           else {return 0 ;}
+
+}
 unsigned char leer_buffer () {
 
 /*
@@ -277,7 +347,9 @@ unsigned char cont_eeprom =10;
           contador_de_caracteres = 0;
           //uart1_write_text(buffer_uart);
           //delay_ms(100);
-          indice = memchr (buffer_uart,':',lengt_buffer);
+          if (buffer_uart[0]== ','){ validar_hora(buffer_uart);}
+          else{
+          indice = memchr (buffer_uart,' ',lengt_buffer);
           if (indice != 0){
                   //uart1_write_text(indice_time);
                   for (i=1 ; i < 12 ; i++) {
@@ -306,8 +378,8 @@ unsigned char cont_eeprom =10;
             mapear_caracteres (valor,buffer_uart);
            }
       
-      
       }
+   }
 
 }
 
@@ -318,23 +390,26 @@ void main() {
 
 void interrupt (){
 
-      dato =  uart1_read();
-      asignar_flags(dato);
-      cargar_buffer(dato);
-      leer_buffer();
+      if (uart1_data_ready()){
+        dato =  uart1_read();
+        asignar_flags(dato);
+        cargar_buffer(dato);
+        leer_buffer();
+
+       }
       
       if (tmr1if_bit){
           tmr1if_bit =0;
-           //rb5_bit = eeprom_read (0);
-           //rb4_bit = eeprom_read(1);
-           rb7_bit ^=1;
            TMR1H = 0x00;
            TMR1L = 0x00;
-           //gie_bit =0;
-           tmr1on_bit =0;
-           uart1_write (eeprom_read(10));
-           //gie_bit =1;
+           contador_timer++;
            tmr1on_bit =1;
+           if (contador_timer == 4){
+              contador_timer =0;
+              rb7_bit ^=1;
+
+
+           }
 
 
 

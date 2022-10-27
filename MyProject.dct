@@ -13,6 +13,7 @@ __math_tempbd
 __savepclath
 __savestatus
 abs
+activado
 add_32x32_fp
 adden
 adden_bit
@@ -36,6 +37,7 @@ boot16_delay_5ms
 brgh
 brgh_bit
 buffer_conversion
+buffer_conversion_2
 buffer_uart
 buscar_prefijo
 byte2double
@@ -93,9 +95,11 @@ comfrem
 compare_double
 cont2
 contador_de_caracteres
+contador_timer
 control_alarma
 control_luz
 conversion
+conversion_2
 convertir_string_a_numero
 cren
 cren_bit
@@ -169,6 +173,7 @@ ics_auto
 ics_off
 indf
 indice
+indice_rtc
 int2double
 intcon
 inte
@@ -196,6 +201,7 @@ isxdigit
 labs
 ldiv
 leer_buffer
+llego
 longint2double
 longinttohex
 longinttostrwithzeros
@@ -492,6 +498,7 @@ uart1_tx_idle
 uart1_write
 uart1_write_text
 uldiv
+validar_hora
 valor
 vdelay_advanced_ms
 vdelay_ms
