@@ -45,7 +45,7 @@ cont_2: Se encarga de contabilizar los valores recibidos como comandos por el pu
 
 */
 
-#define lengt_buffer 20
+#define lengt_buffer 21
 unsigned char buffer_uart [lengt_buffer];
 unsigned char contador_de_caracteres;
 unsigned char *indice;
@@ -58,11 +58,9 @@ unsigned char i =0;
 unsigned char x = 0;
 unsigned char comando_1 [] = {"luz"};
 unsigned char comando_2 [] = {"alarma"};
-unsigned char comando_3 [] = {"time"};
-unsigned char *puntero_comando[3] = {comando_1,comando_2,comando_3};
+unsigned char *puntero_comando[3] = {comando_1,comando_2};
 unsigned char parametro ;
 unsigned char cont2=0;
-unsigned char llego;
 unsigned char activado =0;
 
 //pruebas de concepto///
@@ -70,7 +68,7 @@ unsigned int conversion = 0;
 unsigned char buffer_conversion_2[2];
 unsigned char contador_timer=0;
 unsigned char buffer_conversion[2];
-unsigned char conversion_2 [4] = {0,0};
+unsigned int conversion_2 [2] ;
 
 
 //unsigned char resultado_comparacion ;
@@ -167,8 +165,8 @@ parametros : dato puede tomar valores como "@" y  "*" pero pueden ser modificado
            
 */
 
-     if (contador_de_caracteres == 0 && (dato == '@' || dato == ',')){flag_inicio = 1;  }
-     if (contador_de_caracteres >=3 && (dato == '*' || dato == '+') ){flag_fin =1; flag_inicio = 0; }
+     if (contador_de_caracteres == 0 && (dato == '@' || dato == ',')){flag_inicio = 1; flag_fin =0;  }
+     if (contador_de_caracteres >=3 && (dato == '*' || dato == '-') ){flag_fin =1; flag_inicio = 0; }
 
 
 }
@@ -265,52 +263,71 @@ unsigned char  mapear_caracteres (unsigned char valor, unsigned char *indice){
 
 void validar_hora (unsigned char *buffer){
 
-unsigned char conversion_array [2];
+unsigned char conversion_array [5] ={"xxxx"};
+unsigned char aux_conversion[3];
 unsigned char i =0;
 unsigned char contador =0;
-unsigned char contador_ok = 0;
-unsigned char dato_eeprom =0;
+unsigned int conversion_1 =0;
+unsigned int conversion_2 =0;
+unsigned int almacen[2];
+unsigned char contador_2 = 0;
 
 
            
                 for   (i =1 ; i <6 ; i++){
 
-                      if (isdigit(buffer[i])  && contador <2 ){
-                         buffer_conversion_2[contador]=buffer[i];
+                      if (isdigit(buffer[i])){
+                         conversion_array[contador]=buffer[i];
                          contador++;
 
-                      }
-                      if (contador == 2 ){
-                          conversion_2[contador_ok] = atoi(buffer_conversion_2);
-                          memset(buffer_conversion,'0',2);
-                          contador_ok++;
-                          contador =0;
-                      }
-                      if  (contador_ok == 2 && activado ==0){
-                          contador_ok =0;
-                          for (i = 0; i <2 ; i++){
-                              if (conversion_2[i] == eeprom_read(10+i)){
-                                 contador_ok++;
-                                 delay_ms(50);
-                              }
-                              if (contador_ok ==2){contador_ok =0; rb5_bit =1; flag_fin = 0; activado=1; memset(buffer_uart,'0',lengt_buffer); break;}
-                          }
-
-                       }
-                       if  (contador_ok == 2 && activado ==1){
-                            contador_ok =0;
-                            for (i = 0; i <2 ; i++){
-                                if (conversion_2[i] == eeprom_read(12+i)){
-                                   contador_ok++;
-                                   delay_ms(50);
-                                }
-                                if (contador_ok ==2){contador_ok =0; rb5_bit =0; flag_fin = 0; activado=0;memset(buffer_uart,'0',lengt_buffer); break;}
-                            }
-                          }
 
 
 
                     }
+                  }
+                  uart1_write_text(conversion_array);
+                  delay_ms(100);
+                  aux_conversion[0] = conversion_array[0];
+                  aux_conversion[1] = conversion_array [1];
+                  conversion_2 = atoi (&conversion_array[2]);
+                  conversion_1 = atoi (aux_conversion);
+                  almacen[0] = conversion_1;
+                  almacen[1] = conversion_2;
+                  uart1_write(almacen[0]);
+                  delay_ms(50);
+                  uart1_write(almacen[1]);
+                  delay_ms(50);
+                  
+                  for (i = 0 ; i<2 ; i++){
+                  
+                     if (almacen[i] == eeprom_read(i)) {
+                        delay_ms(50);
+                        contador_2++;
+
+                     }
+                     uart1_write(contador_2);
+                     if (contador_2 == 1){rb5_bit = 1 ; memset (buffer_uart,'0',lengt_buffer); contador_2 =0;}
+                  }
+                  contador_2=0;
+                     for (i = 0 ; i<2 ; i++){
+
+                     if (almacen[i] == eeprom_read(2+i)) {
+                        delay_ms(50);
+                        contador_2++;
+
+                     }
+                     uart1_write(contador_2);
+                     if (contador_2 == 1){rb5_bit = 0 ; memset (buffer_uart,'0',lengt_buffer); contador_2 =0;}
+                  }
+
+                  
+
+
+
+                  
+
+                  
+
 
               
 
@@ -323,10 +340,10 @@ unsigned char dato_eeprom =0;
 void guardar_datos_en_eeprom(unsigned char *indice){
 unsigned char i;
 unsigned char cont_buff=0;
-unsigned char cont_eeprom =10;
+unsigned char cont_eeprom =0;
 
                 //uart1_write_text(indice_time);
-                  for (i=1 ; i < 12 ; i++) {
+                  for (i=1 ; i < 13 ; i++) {
                      if (isdigit(indice [i]) && cont_buff <2 ){
                         buffer_conversion[cont_buff]=indice[i];
                         cont_buff++;
@@ -339,7 +356,7 @@ unsigned char cont_eeprom =10;
                      cont_eeprom ++;
                      cont_buff =0;
                      }
-                     if (cont_eeprom == 14){
+                     if (cont_eeprom == 4){
                      cont_eeprom =10;
 
                      }
@@ -354,7 +371,7 @@ void buscar_comandos (){
 
 
 
-     indice = memchr (buffer_uart,' ',lengt_buffer);  // el prefijo espacio viene asociado al comando @time 22,15,22,30*
+     indice = memchr (buffer_uart,':',lengt_buffer);  // el prefijo espacio viene asociado al comando @time 22,15,22,30*
                if (indice != 0){
                       guardar_datos_en_eeprom(indice);
                }
@@ -384,7 +401,7 @@ unsigned char leer_buffer () {
           RCIF_BIT = 0;
           contador_de_caracteres = 0;
 
-          if (buffer_uart[0]== ','){ validar_hora(buffer_uart);}
+          if (buffer_uart[0]== ','){ validar_hora(buffer_uart); flag_fin =0;}
           
           else{ buscar_comandos();}
    }
@@ -412,9 +429,11 @@ void interrupt (){
            TMR1L = 0x00;
            contador_timer++;
            tmr1on_bit =1;
-           if (contador_timer == 4){
+           if (contador_timer == 10){
               contador_timer =0;
-              rb7_bit ^=1;
+              rb6_bit ^=1;
+              uart1_write_text ("AT+CCLK?\r\n");
+
 
 
            }

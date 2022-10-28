@@ -91,7 +91,6 @@ cmif
 cmif_bit
 comando_1
 comando_2
-comando_3
 comfrem
 compare_double
 cont2
@@ -203,7 +202,6 @@ isxdigit
 labs
 ldiv
 leer_buffer
-llego
 longint2double
 longinttohex
 longinttostrwithzeros

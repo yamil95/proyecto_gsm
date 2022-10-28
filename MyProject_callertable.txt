@@ -11,11 +11,14 @@ interrupt
 	leer_buffer
 		validar_hora
 			isdigit
+			UART1_Write_Text
+				UART1_Write
 			atoi
 				isdigit
 				Mul_16X16_U
-			memset
+			UART1_Write
 			EEPROM_Read
+			memset
 		buscar_comandos
 			memchr
 			guardar_datos_en_eeprom
@@ -32,3 +35,5 @@ interrupt
 				Mul_8X8_U
 				____DoIFC
 				memset
+	UART1_Write_Text
+		UART1_Write
