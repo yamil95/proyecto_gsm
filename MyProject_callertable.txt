@@ -16,17 +16,19 @@ interrupt
 				Mul_16X16_U
 			memset
 			EEPROM_Read
-		memchr
-		isdigit
-		atoi
-			isdigit
-			Mul_16X16_U
-		EEPROM_Write
-		memset
-		buscar_prefijo
-		mapear_caracteres
-			convertir_string_a_numero
-			EEPROM_Write
-			Mul_8X8_U
-			____DoIFC
-			memset
+		buscar_comandos
+			memchr
+			guardar_datos_en_eeprom
+				isdigit
+				atoi
+					isdigit
+					Mul_16X16_U
+				EEPROM_Write
+				memset
+			buscar_prefijo
+			mapear_caracteres
+				convertir_string_a_numero
+				EEPROM_Write
+				Mul_8X8_U
+				____DoIFC
+				memset

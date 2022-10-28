@@ -263,7 +263,7 @@ unsigned char  mapear_caracteres (unsigned char valor, unsigned char *indice){
 }
 
 
-unsigned char validar_hora (unsigned char *buffer){
+void validar_hora (unsigned char *buffer){
 
 unsigned char conversion_array [2];
 unsigned char i =0;
@@ -271,7 +271,7 @@ unsigned char contador =0;
 unsigned char contador_ok = 0;
 unsigned char dato_eeprom =0;
 
-           if (buffer [0] == ','){
+
            
                 for   (i =1 ; i <6 ; i++){
 
@@ -308,21 +308,62 @@ unsigned char dato_eeprom =0;
                             }
                           }
 
-                        /*
-                        uart1_write_text("ok\r\n");
-                        delay_ms(100);
-                        uart1_write(eeprom_read(10));
-                        delay_ms(100);
-                        uart1_write(conversion_2[0]);
-                        */
+
 
                     }
-              }
+
               
 
            
 
-           else {return 0 ;}
+
+
+}
+
+void guardar_datos_en_eeprom(unsigned char *indice){
+unsigned char i;
+unsigned char cont_buff=0;
+unsigned char cont_eeprom =10;
+
+                //uart1_write_text(indice_time);
+                  for (i=1 ; i < 12 ; i++) {
+                     if (isdigit(indice [i]) && cont_buff <2 ){
+                        buffer_conversion[cont_buff]=indice[i];
+                        cont_buff++;
+                     }
+                     if (cont_buff ==2){
+                     conversion = atoi(buffer_conversion);
+                     eeprom_write(cont_eeprom,conversion);
+                     delay_ms(30);
+                     memset(buffer_conversion,'0',2);
+                     cont_eeprom ++;
+                     cont_buff =0;
+                     }
+                     if (cont_eeprom == 14){
+                     cont_eeprom =10;
+
+                     }
+                  }
+                  memset (buffer_uart,'0',lengt_buffer);
+                  flag_fin = 0;
+
+
+}
+
+void buscar_comandos (){
+
+
+
+     indice = memchr (buffer_uart,' ',lengt_buffer);  // el prefijo espacio viene asociado al comando @time 22,15,22,30*
+               if (indice != 0){
+                      guardar_datos_en_eeprom(indice);
+               }
+               else {
+                     valor = buscar_prefijo (buffer_uart,'_');  // busca el prefijo asociado a uno de los comandos @luz_1* , @alarma_1*
+                     mapear_caracteres (valor,buffer_uart);
+                }
+
+
 
 }
 unsigned char leer_buffer () {
@@ -339,46 +380,13 @@ unsigned char leer_buffer () {
   Return : Ninguno
 */
 
-unsigned char i;
-unsigned char cont_buff=0;
-unsigned char cont_eeprom =10;
       if (flag_fin ) {
           RCIF_BIT = 0;
           contador_de_caracteres = 0;
-          //uart1_write_text(buffer_uart);
-          //delay_ms(100);
-          if (buffer_uart[0]== ','){ validar_hora(buffer_uart);}
-          else{
-          indice = memchr (buffer_uart,' ',lengt_buffer);
-          if (indice != 0){
-                  //uart1_write_text(indice_time);
-                  for (i=1 ; i < 12 ; i++) {
-                     if (isdigit(indice [i]) && cont_buff <2 ){
-                        buffer_conversion[cont_buff]=indice[i];
-                        cont_buff++;
-                     }
-                     if (cont_buff ==2){
-                     conversion = atoi(buffer_conversion);
-                     eeprom_write(cont_eeprom,conversion);
-                     delay_ms(50);
-                     memset(buffer_conversion,'0',2);
-                     cont_eeprom ++;
-                     cont_buff =0;
-                     }
-                     if (cont_eeprom == 14){
-                     cont_eeprom =10;
 
-                     }
-                  }
-                  memset (buffer_uart,'0',lengt_buffer);
-                  flag_fin = 0;
-          }
-          else {
-            valor = buscar_prefijo (buffer_uart,'_');
-            mapear_caracteres (valor,buffer_uart);
-           }
-      
-      }
+          if (buffer_uart[0]== ','){ validar_hora(buffer_uart);}
+          
+          else{ buscar_comandos();}
    }
 
 }

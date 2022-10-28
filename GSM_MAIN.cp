@@ -145,7 +145,7 @@ unsigned char mapear_caracteres (unsigned char valor, unsigned char *indice){
 }
 
 
-unsigned char validar_hora (unsigned char *buffer){
+void validar_hora (unsigned char *buffer){
 
 unsigned char conversion_array [2];
 unsigned char i =0;
@@ -153,7 +153,7 @@ unsigned char contador =0;
 unsigned char contador_ok = 0;
 unsigned char dato_eeprom =0;
 
- if (buffer [0] == ','){
+
 
  for (i =1 ; i <6 ; i++){
 
@@ -189,30 +189,24 @@ unsigned char dato_eeprom =0;
  if (contador_ok ==2){contador_ok =0; rb5_bit =0; flag_fin = 0; activado=0;memset(buffer_uart,'0', 20 ); break;}
  }
  }
-#line 319 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
+
+
+
  }
- }
 
 
 
 
- else {return 0 ;}
+
+
 
 }
-unsigned char leer_buffer () {
-#line 342 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
+
+void guardar_datos_en_eeprom(unsigned char *indice){
 unsigned char i;
 unsigned char cont_buff=0;
 unsigned char cont_eeprom =10;
- if (flag_fin ) {
- RCIF_BIT = 0;
- contador_de_caracteres = 0;
 
-
- if (buffer_uart[0]== ','){ validar_hora(buffer_uart);}
- else{
- indice = memchr (buffer_uart,' ', 20 );
- if (indice != 0){
 
  for (i=1 ; i < 12 ; i++) {
  if (isdigit(indice [i]) && cont_buff <2 ){
@@ -222,7 +216,7 @@ unsigned char cont_eeprom =10;
  if (cont_buff ==2){
  conversion = atoi(buffer_conversion);
  eeprom_write(cont_eeprom,conversion);
- delay_ms(50);
+ delay_ms(30);
  memset(buffer_conversion,'0',2);
  cont_eeprom ++;
  cont_buff =0;
@@ -234,13 +228,35 @@ unsigned char cont_eeprom =10;
  }
  memset (buffer_uart,'0', 20 );
  flag_fin = 0;
+
+
+}
+
+void buscar_comandos (){
+
+
+
+ indice = memchr (buffer_uart,' ', 20 );
+ if (indice != 0){
+ guardar_datos_en_eeprom(indice);
  }
  else {
  valor = buscar_prefijo (buffer_uart,'_');
  mapear_caracteres (valor,buffer_uart);
  }
 
- }
+
+
+}
+unsigned char leer_buffer () {
+#line 383 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
+ if (flag_fin ) {
+ RCIF_BIT = 0;
+ contador_de_caracteres = 0;
+
+ if (buffer_uart[0]== ','){ validar_hora(buffer_uart);}
+
+ else{ buscar_comandos();}
  }
 
 }

@@ -4,12 +4,12 @@ _control_luz:
 ;GSM_MAIN.c,83 :: 		void control_luz(unsigned char valor_luz){
 ;GSM_MAIN.c,85 :: 		rb5_bit = valor_luz;
 	BTFSC      FARG_control_luz_valor_luz+0, 0
-	GOTO       L__control_luz79
+	GOTO       L__control_luz77
 	BCF        RB5_bit+0, BitPos(RB5_bit+0)
-	GOTO       L__control_luz80
-L__control_luz79:
+	GOTO       L__control_luz78
+L__control_luz77:
 	BSF        RB5_bit+0, BitPos(RB5_bit+0)
-L__control_luz80:
+L__control_luz78:
 ;GSM_MAIN.c,87 :: 		}
 L_end_control_luz:
 	RETURN
@@ -20,12 +20,12 @@ _control_alarma:
 ;GSM_MAIN.c,88 :: 		void control_alarma(unsigned char valor_alarma){
 ;GSM_MAIN.c,90 :: 		rb4_bit = valor_alarma;
 	BTFSC      FARG_control_alarma_valor_alarma+0, 0
-	GOTO       L__control_alarma82
+	GOTO       L__control_alarma80
 	BCF        RB4_bit+0, BitPos(RB4_bit+0)
-	GOTO       L__control_alarma83
-L__control_alarma82:
+	GOTO       L__control_alarma81
+L__control_alarma80:
 	BSF        RB4_bit+0, BitPos(RB4_bit+0)
-L__control_alarma83:
+L__control_alarma81:
 ;GSM_MAIN.c,92 :: 		}
 L_end_control_alarma:
 	RETURN
@@ -122,14 +122,14 @@ _asignar_flags:
 	MOVF       FARG_asignar_flags_dato+0, 0
 	XORLW      64
 	BTFSC      STATUS+0, 2
-	GOTO       L__asignar_flags72
+	GOTO       L__asignar_flags70
 	MOVF       FARG_asignar_flags_dato+0, 0
 	XORLW      44
 	BTFSC      STATUS+0, 2
-	GOTO       L__asignar_flags72
+	GOTO       L__asignar_flags70
 	GOTO       L_asignar_flags6
-L__asignar_flags72:
-L__asignar_flags71:
+L__asignar_flags70:
+L__asignar_flags69:
 	MOVLW      1
 	MOVWF      _flag_inicio+0
 L_asignar_flags6:
@@ -141,14 +141,14 @@ L_asignar_flags6:
 	MOVF       FARG_asignar_flags_dato+0, 0
 	XORLW      42
 	BTFSC      STATUS+0, 2
-	GOTO       L__asignar_flags70
+	GOTO       L__asignar_flags68
 	MOVF       FARG_asignar_flags_dato+0, 0
 	XORLW      43
 	BTFSC      STATUS+0, 2
-	GOTO       L__asignar_flags70
+	GOTO       L__asignar_flags68
 	GOTO       L_asignar_flags11
-L__asignar_flags70:
-L__asignar_flags69:
+L__asignar_flags68:
+L__asignar_flags67:
 	MOVLW      1
 	MOVWF      _flag_fin+0
 	CLRF       _flag_inicio+0
@@ -195,7 +195,7 @@ _cargar_buffer:
 	XORLW      1
 	BTFSS      STATUS+0, 2
 	GOTO       L_cargar_buffer16
-L__cargar_buffer73:
+L__cargar_buffer71:
 ;GSM_MAIN.c,208 :: 		RCIF_BIT = 0;
 	BCF        RCIF_bit+0, BitPos(RCIF_bit+0)
 ;GSM_MAIN.c,209 :: 		buffer_uart[contador_de_caracteres] = dato ;
@@ -357,26 +357,19 @@ L_end_mapear_caracteres:
 
 _validar_hora:
 
-;GSM_MAIN.c,266 :: 		unsigned char validar_hora (unsigned char *buffer){
+;GSM_MAIN.c,266 :: 		void validar_hora (unsigned char *buffer){
 ;GSM_MAIN.c,269 :: 		unsigned char i =0;
 	CLRF       validar_hora_i_L0+0
 	CLRF       validar_hora_contador_L0+0
 	CLRF       validar_hora_contador_ok_L0+0
-;GSM_MAIN.c,274 :: 		if (buffer [0] == ','){
-	MOVF       FARG_validar_hora_buffer+0, 0
-	MOVWF      FSR
-	MOVF       INDF+0, 0
-	XORLW      44
-	BTFSS      STATUS+0, 2
-	GOTO       L_validar_hora25
 ;GSM_MAIN.c,276 :: 		for   (i =1 ; i <6 ; i++){
 	MOVLW      1
 	MOVWF      validar_hora_i_L0+0
-L_validar_hora26:
+L_validar_hora25:
 	MOVLW      6
 	SUBWF      validar_hora_i_L0+0, 0
 	BTFSC      STATUS+0, 0
-	GOTO       L_validar_hora27
+	GOTO       L_validar_hora26
 ;GSM_MAIN.c,278 :: 		if (isdigit(buffer[i])  && contador <2 ){
 	MOVF       validar_hora_i_L0+0, 0
 	ADDWF      FARG_validar_hora_buffer+0, 0
@@ -386,12 +379,12 @@ L_validar_hora26:
 	CALL       _isdigit+0
 	MOVF       R0+0, 0
 	BTFSC      STATUS+0, 2
-	GOTO       L_validar_hora31
+	GOTO       L_validar_hora30
 	MOVLW      2
 	SUBWF      validar_hora_contador_L0+0, 0
 	BTFSC      STATUS+0, 0
-	GOTO       L_validar_hora31
-L__validar_hora76:
+	GOTO       L_validar_hora30
+L__validar_hora74:
 ;GSM_MAIN.c,279 :: 		buffer_conversion_2[contador]=buffer[i];
 	MOVF       validar_hora_contador_L0+0, 0
 	ADDLW      _buffer_conversion_2+0
@@ -408,12 +401,12 @@ L__validar_hora76:
 ;GSM_MAIN.c,280 :: 		contador++;
 	INCF       validar_hora_contador_L0+0, 1
 ;GSM_MAIN.c,282 :: 		}
-L_validar_hora31:
+L_validar_hora30:
 ;GSM_MAIN.c,283 :: 		if (contador == 2 ){
 	MOVF       validar_hora_contador_L0+0, 0
 	XORLW      2
 	BTFSS      STATUS+0, 2
-	GOTO       L_validar_hora32
+	GOTO       L_validar_hora31
 ;GSM_MAIN.c,284 :: 		conversion_2[contador_ok] = atoi(buffer_conversion_2);
 	MOVF       validar_hora_contador_ok_L0+0, 0
 	ADDLW      _conversion_2+0
@@ -440,26 +433,26 @@ L_validar_hora31:
 ;GSM_MAIN.c,287 :: 		contador =0;
 	CLRF       validar_hora_contador_L0+0
 ;GSM_MAIN.c,288 :: 		}
-L_validar_hora32:
+L_validar_hora31:
 ;GSM_MAIN.c,289 :: 		if  (contador_ok == 2 && activado ==0){
 	MOVF       validar_hora_contador_ok_L0+0, 0
 	XORLW      2
 	BTFSS      STATUS+0, 2
-	GOTO       L_validar_hora35
+	GOTO       L_validar_hora34
 	MOVF       _activado+0, 0
 	XORLW      0
 	BTFSS      STATUS+0, 2
-	GOTO       L_validar_hora35
-L__validar_hora75:
+	GOTO       L_validar_hora34
+L__validar_hora73:
 ;GSM_MAIN.c,290 :: 		contador_ok =0;
 	CLRF       validar_hora_contador_ok_L0+0
 ;GSM_MAIN.c,291 :: 		for (i = 0; i <2 ; i++){
 	CLRF       validar_hora_i_L0+0
-L_validar_hora36:
+L_validar_hora35:
 	MOVLW      2
 	SUBWF      validar_hora_i_L0+0, 0
 	BTFSC      STATUS+0, 0
-	GOTO       L_validar_hora37
+	GOTO       L_validar_hora36
 ;GSM_MAIN.c,292 :: 		if (conversion_2[i] == eeprom_read(10+i)){
 	MOVF       validar_hora_i_L0+0, 0
 	ADDLW      _conversion_2+0
@@ -473,7 +466,7 @@ L_validar_hora36:
 	MOVF       FLOC__validar_hora+0, 0
 	XORWF      R0+0, 0
 	BTFSS      STATUS+0, 2
-	GOTO       L_validar_hora39
+	GOTO       L_validar_hora38
 ;GSM_MAIN.c,293 :: 		contador_ok++;
 	INCF       validar_hora_contador_ok_L0+0, 1
 ;GSM_MAIN.c,294 :: 		delay_ms(50);
@@ -481,19 +474,19 @@ L_validar_hora36:
 	MOVWF      R12+0
 	MOVLW      238
 	MOVWF      R13+0
-L_validar_hora40:
+L_validar_hora39:
 	DECFSZ     R13+0, 1
-	GOTO       L_validar_hora40
+	GOTO       L_validar_hora39
 	DECFSZ     R12+0, 1
-	GOTO       L_validar_hora40
+	GOTO       L_validar_hora39
 	NOP
 ;GSM_MAIN.c,295 :: 		}
-L_validar_hora39:
+L_validar_hora38:
 ;GSM_MAIN.c,296 :: 		if (contador_ok ==2){contador_ok =0; rb5_bit =1; flag_fin = 0; activado=1; memset(buffer_uart,'0',lengt_buffer); break;}
 	MOVF       validar_hora_contador_ok_L0+0, 0
 	XORLW      2
 	BTFSS      STATUS+0, 2
-	GOTO       L_validar_hora41
+	GOTO       L_validar_hora40
 	CLRF       validar_hora_contador_ok_L0+0
 	BSF        RB5_bit+0, BitPos(RB5_bit+0)
 	CLRF       _flag_fin+0
@@ -508,34 +501,34 @@ L_validar_hora39:
 	MOVLW      0
 	MOVWF      FARG_memset_n+1
 	CALL       _memset+0
-	GOTO       L_validar_hora37
-L_validar_hora41:
+	GOTO       L_validar_hora36
+L_validar_hora40:
 ;GSM_MAIN.c,291 :: 		for (i = 0; i <2 ; i++){
 	INCF       validar_hora_i_L0+0, 1
 ;GSM_MAIN.c,297 :: 		}
-	GOTO       L_validar_hora36
-L_validar_hora37:
+	GOTO       L_validar_hora35
+L_validar_hora36:
 ;GSM_MAIN.c,299 :: 		}
-L_validar_hora35:
+L_validar_hora34:
 ;GSM_MAIN.c,300 :: 		if  (contador_ok == 2 && activado ==1){
 	MOVF       validar_hora_contador_ok_L0+0, 0
 	XORLW      2
 	BTFSS      STATUS+0, 2
-	GOTO       L_validar_hora44
+	GOTO       L_validar_hora43
 	MOVF       _activado+0, 0
 	XORLW      1
 	BTFSS      STATUS+0, 2
-	GOTO       L_validar_hora44
-L__validar_hora74:
+	GOTO       L_validar_hora43
+L__validar_hora72:
 ;GSM_MAIN.c,301 :: 		contador_ok =0;
 	CLRF       validar_hora_contador_ok_L0+0
 ;GSM_MAIN.c,302 :: 		for (i = 0; i <2 ; i++){
 	CLRF       validar_hora_i_L0+0
-L_validar_hora45:
+L_validar_hora44:
 	MOVLW      2
 	SUBWF      validar_hora_i_L0+0, 0
 	BTFSC      STATUS+0, 0
-	GOTO       L_validar_hora46
+	GOTO       L_validar_hora45
 ;GSM_MAIN.c,303 :: 		if (conversion_2[i] == eeprom_read(12+i)){
 	MOVF       validar_hora_i_L0+0, 0
 	ADDLW      _conversion_2+0
@@ -549,7 +542,7 @@ L_validar_hora45:
 	MOVF       FLOC__validar_hora+0, 0
 	XORWF      R0+0, 0
 	BTFSS      STATUS+0, 2
-	GOTO       L_validar_hora48
+	GOTO       L_validar_hora47
 ;GSM_MAIN.c,304 :: 		contador_ok++;
 	INCF       validar_hora_contador_ok_L0+0, 1
 ;GSM_MAIN.c,305 :: 		delay_ms(50);
@@ -557,19 +550,19 @@ L_validar_hora45:
 	MOVWF      R12+0
 	MOVLW      238
 	MOVWF      R13+0
-L_validar_hora49:
+L_validar_hora48:
 	DECFSZ     R13+0, 1
-	GOTO       L_validar_hora49
+	GOTO       L_validar_hora48
 	DECFSZ     R12+0, 1
-	GOTO       L_validar_hora49
+	GOTO       L_validar_hora48
 	NOP
 ;GSM_MAIN.c,306 :: 		}
-L_validar_hora48:
+L_validar_hora47:
 ;GSM_MAIN.c,307 :: 		if (contador_ok ==2){contador_ok =0; rb5_bit =0; flag_fin = 0; activado=0;memset(buffer_uart,'0',lengt_buffer); break;}
 	MOVF       validar_hora_contador_ok_L0+0, 0
 	XORLW      2
 	BTFSS      STATUS+0, 2
-	GOTO       L_validar_hora50
+	GOTO       L_validar_hora49
 	CLRF       validar_hora_contador_ok_L0+0
 	BCF        RB5_bit+0, BitPos(RB5_bit+0)
 	CLRF       _flag_fin+0
@@ -583,58 +576,153 @@ L_validar_hora48:
 	MOVLW      0
 	MOVWF      FARG_memset_n+1
 	CALL       _memset+0
-	GOTO       L_validar_hora46
-L_validar_hora50:
+	GOTO       L_validar_hora45
+L_validar_hora49:
 ;GSM_MAIN.c,302 :: 		for (i = 0; i <2 ; i++){
 	INCF       validar_hora_i_L0+0, 1
 ;GSM_MAIN.c,308 :: 		}
-	GOTO       L_validar_hora45
-L_validar_hora46:
+	GOTO       L_validar_hora44
+L_validar_hora45:
 ;GSM_MAIN.c,309 :: 		}
-L_validar_hora44:
+L_validar_hora43:
 ;GSM_MAIN.c,276 :: 		for   (i =1 ; i <6 ; i++){
 	INCF       validar_hora_i_L0+0, 1
-;GSM_MAIN.c,319 :: 		}
-	GOTO       L_validar_hora26
-L_validar_hora27:
-;GSM_MAIN.c,320 :: 		}
-	GOTO       L_validar_hora51
-L_validar_hora25:
-;GSM_MAIN.c,325 :: 		else {return 0 ;}
-	CLRF       R0+0
-	GOTO       L_end_validar_hora
-L_validar_hora51:
-;GSM_MAIN.c,327 :: 		}
+;GSM_MAIN.c,313 :: 		}
+	GOTO       L_validar_hora25
+L_validar_hora26:
+;GSM_MAIN.c,321 :: 		}
 L_end_validar_hora:
 	RETURN
 ; end of _validar_hora
 
-_leer_buffer:
+_guardar_datos_en_eeprom:
 
-;GSM_MAIN.c,328 :: 		unsigned char leer_buffer () {
-;GSM_MAIN.c,343 :: 		unsigned char cont_buff=0;
-	CLRF       leer_buffer_cont_buff_L0+0
+;GSM_MAIN.c,323 :: 		void guardar_datos_en_eeprom(unsigned char *indice){
+;GSM_MAIN.c,325 :: 		unsigned char cont_buff=0;
+	CLRF       guardar_datos_en_eeprom_cont_buff_L0+0
 	MOVLW      10
-	MOVWF      leer_buffer_cont_eeprom_L0+0
-;GSM_MAIN.c,345 :: 		if (flag_fin ) {
-	MOVF       _flag_fin+0, 0
+	MOVWF      guardar_datos_en_eeprom_cont_eeprom_L0+0
+;GSM_MAIN.c,329 :: 		for (i=1 ; i < 12 ; i++) {
+	MOVLW      1
+	MOVWF      guardar_datos_en_eeprom_i_L0+0
+L_guardar_datos_en_eeprom50:
+	MOVLW      12
+	SUBWF      guardar_datos_en_eeprom_i_L0+0, 0
+	BTFSC      STATUS+0, 0
+	GOTO       L_guardar_datos_en_eeprom51
+;GSM_MAIN.c,330 :: 		if (isdigit(indice [i]) && cont_buff <2 ){
+	MOVF       guardar_datos_en_eeprom_i_L0+0, 0
+	ADDWF      FARG_guardar_datos_en_eeprom_indice+0, 0
+	MOVWF      FSR
+	MOVF       INDF+0, 0
+	MOVWF      FARG_isdigit_character+0
+	CALL       _isdigit+0
+	MOVF       R0+0, 0
 	BTFSC      STATUS+0, 2
-	GOTO       L_leer_buffer52
-;GSM_MAIN.c,346 :: 		RCIF_BIT = 0;
-	BCF        RCIF_bit+0, BitPos(RCIF_bit+0)
-;GSM_MAIN.c,347 :: 		contador_de_caracteres = 0;
-	CLRF       _contador_de_caracteres+0
-;GSM_MAIN.c,350 :: 		if (buffer_uart[0]== ','){ validar_hora(buffer_uart);}
-	MOVF       _buffer_uart+0, 0
-	XORLW      44
+	GOTO       L_guardar_datos_en_eeprom55
+	MOVLW      2
+	SUBWF      guardar_datos_en_eeprom_cont_buff_L0+0, 0
+	BTFSC      STATUS+0, 0
+	GOTO       L_guardar_datos_en_eeprom55
+L__guardar_datos_en_eeprom75:
+;GSM_MAIN.c,331 :: 		buffer_conversion[cont_buff]=indice[i];
+	MOVF       guardar_datos_en_eeprom_cont_buff_L0+0, 0
+	ADDLW      _buffer_conversion+0
+	MOVWF      R1+0
+	MOVF       guardar_datos_en_eeprom_i_L0+0, 0
+	ADDWF      FARG_guardar_datos_en_eeprom_indice+0, 0
+	MOVWF      FSR
+	MOVF       INDF+0, 0
+	MOVWF      R0+0
+	MOVF       R1+0, 0
+	MOVWF      FSR
+	MOVF       R0+0, 0
+	MOVWF      INDF+0
+;GSM_MAIN.c,332 :: 		cont_buff++;
+	INCF       guardar_datos_en_eeprom_cont_buff_L0+0, 1
+;GSM_MAIN.c,333 :: 		}
+L_guardar_datos_en_eeprom55:
+;GSM_MAIN.c,334 :: 		if (cont_buff ==2){
+	MOVF       guardar_datos_en_eeprom_cont_buff_L0+0, 0
+	XORLW      2
 	BTFSS      STATUS+0, 2
-	GOTO       L_leer_buffer53
+	GOTO       L_guardar_datos_en_eeprom56
+;GSM_MAIN.c,335 :: 		conversion = atoi(buffer_conversion);
+	MOVLW      _buffer_conversion+0
+	MOVWF      FARG_atoi_s+0
+	CALL       _atoi+0
+	MOVF       R0+0, 0
+	MOVWF      _conversion+0
+	MOVF       R0+1, 0
+	MOVWF      _conversion+1
+;GSM_MAIN.c,336 :: 		eeprom_write(cont_eeprom,conversion);
+	MOVF       guardar_datos_en_eeprom_cont_eeprom_L0+0, 0
+	MOVWF      FARG_EEPROM_Write_Address+0
+	MOVF       R0+0, 0
+	MOVWF      FARG_EEPROM_Write_data_+0
+	CALL       _EEPROM_Write+0
+;GSM_MAIN.c,337 :: 		delay_ms(30);
+	MOVLW      39
+	MOVWF      R12+0
+	MOVLW      245
+	MOVWF      R13+0
+L_guardar_datos_en_eeprom57:
+	DECFSZ     R13+0, 1
+	GOTO       L_guardar_datos_en_eeprom57
+	DECFSZ     R12+0, 1
+	GOTO       L_guardar_datos_en_eeprom57
+;GSM_MAIN.c,338 :: 		memset(buffer_conversion,'0',2);
+	MOVLW      _buffer_conversion+0
+	MOVWF      FARG_memset_p1+0
+	MOVLW      48
+	MOVWF      FARG_memset_character+0
+	MOVLW      2
+	MOVWF      FARG_memset_n+0
+	MOVLW      0
+	MOVWF      FARG_memset_n+1
+	CALL       _memset+0
+;GSM_MAIN.c,339 :: 		cont_eeprom ++;
+	INCF       guardar_datos_en_eeprom_cont_eeprom_L0+0, 1
+;GSM_MAIN.c,340 :: 		cont_buff =0;
+	CLRF       guardar_datos_en_eeprom_cont_buff_L0+0
+;GSM_MAIN.c,341 :: 		}
+L_guardar_datos_en_eeprom56:
+;GSM_MAIN.c,342 :: 		if (cont_eeprom == 14){
+	MOVF       guardar_datos_en_eeprom_cont_eeprom_L0+0, 0
+	XORLW      14
+	BTFSS      STATUS+0, 2
+	GOTO       L_guardar_datos_en_eeprom58
+;GSM_MAIN.c,343 :: 		cont_eeprom =10;
+	MOVLW      10
+	MOVWF      guardar_datos_en_eeprom_cont_eeprom_L0+0
+;GSM_MAIN.c,345 :: 		}
+L_guardar_datos_en_eeprom58:
+;GSM_MAIN.c,329 :: 		for (i=1 ; i < 12 ; i++) {
+	INCF       guardar_datos_en_eeprom_i_L0+0, 1
+;GSM_MAIN.c,346 :: 		}
+	GOTO       L_guardar_datos_en_eeprom50
+L_guardar_datos_en_eeprom51:
+;GSM_MAIN.c,347 :: 		memset (buffer_uart,'0',lengt_buffer);
 	MOVLW      _buffer_uart+0
-	MOVWF      FARG_validar_hora_buffer+0
-	CALL       _validar_hora+0
-	GOTO       L_leer_buffer54
-L_leer_buffer53:
-;GSM_MAIN.c,352 :: 		indice = memchr (buffer_uart,' ',lengt_buffer);
+	MOVWF      FARG_memset_p1+0
+	MOVLW      48
+	MOVWF      FARG_memset_character+0
+	MOVLW      20
+	MOVWF      FARG_memset_n+0
+	MOVLW      0
+	MOVWF      FARG_memset_n+1
+	CALL       _memset+0
+;GSM_MAIN.c,348 :: 		flag_fin = 0;
+	CLRF       _flag_fin+0
+;GSM_MAIN.c,351 :: 		}
+L_end_guardar_datos_en_eeprom:
+	RETURN
+; end of _guardar_datos_en_eeprom
+
+_buscar_comandos:
+
+;GSM_MAIN.c,353 :: 		void buscar_comandos (){
+;GSM_MAIN.c,357 :: 		indice = memchr (buffer_uart,' ',lengt_buffer);  // el prefijo espacio viene asociado al comando @time 22,15,22,30*
 	MOVLW      _buffer_uart+0
 	MOVWF      FARG_memchr_p+0
 	MOVLW      32
@@ -646,128 +734,19 @@ L_leer_buffer53:
 	CALL       _memchr+0
 	MOVF       R0+0, 0
 	MOVWF      _indice+0
-;GSM_MAIN.c,353 :: 		if (indice != 0){
+;GSM_MAIN.c,358 :: 		if (indice != 0){
 	MOVF       R0+0, 0
 	XORLW      0
 	BTFSC      STATUS+0, 2
-	GOTO       L_leer_buffer55
-;GSM_MAIN.c,355 :: 		for (i=1 ; i < 12 ; i++) {
-	MOVLW      1
-	MOVWF      leer_buffer_i_L0+0
-L_leer_buffer56:
-	MOVLW      12
-	SUBWF      leer_buffer_i_L0+0, 0
-	BTFSC      STATUS+0, 0
-	GOTO       L_leer_buffer57
-;GSM_MAIN.c,356 :: 		if (isdigit(indice [i]) && cont_buff <2 ){
-	MOVF       leer_buffer_i_L0+0, 0
-	ADDWF      _indice+0, 0
-	MOVWF      FSR
-	MOVF       INDF+0, 0
-	MOVWF      FARG_isdigit_character+0
-	CALL       _isdigit+0
-	MOVF       R0+0, 0
-	BTFSC      STATUS+0, 2
-	GOTO       L_leer_buffer61
-	MOVLW      2
-	SUBWF      leer_buffer_cont_buff_L0+0, 0
-	BTFSC      STATUS+0, 0
-	GOTO       L_leer_buffer61
-L__leer_buffer77:
-;GSM_MAIN.c,357 :: 		buffer_conversion[cont_buff]=indice[i];
-	MOVF       leer_buffer_cont_buff_L0+0, 0
-	ADDLW      _buffer_conversion+0
-	MOVWF      R1+0
-	MOVF       leer_buffer_i_L0+0, 0
-	ADDWF      _indice+0, 0
-	MOVWF      FSR
-	MOVF       INDF+0, 0
-	MOVWF      R0+0
-	MOVF       R1+0, 0
-	MOVWF      FSR
-	MOVF       R0+0, 0
-	MOVWF      INDF+0
-;GSM_MAIN.c,358 :: 		cont_buff++;
-	INCF       leer_buffer_cont_buff_L0+0, 1
-;GSM_MAIN.c,359 :: 		}
-L_leer_buffer61:
-;GSM_MAIN.c,360 :: 		if (cont_buff ==2){
-	MOVF       leer_buffer_cont_buff_L0+0, 0
-	XORLW      2
-	BTFSS      STATUS+0, 2
-	GOTO       L_leer_buffer62
-;GSM_MAIN.c,361 :: 		conversion = atoi(buffer_conversion);
-	MOVLW      _buffer_conversion+0
-	MOVWF      FARG_atoi_s+0
-	CALL       _atoi+0
-	MOVF       R0+0, 0
-	MOVWF      _conversion+0
-	MOVF       R0+1, 0
-	MOVWF      _conversion+1
-;GSM_MAIN.c,362 :: 		eeprom_write(cont_eeprom,conversion);
-	MOVF       leer_buffer_cont_eeprom_L0+0, 0
-	MOVWF      FARG_EEPROM_Write_Address+0
-	MOVF       R0+0, 0
-	MOVWF      FARG_EEPROM_Write_data_+0
-	CALL       _EEPROM_Write+0
-;GSM_MAIN.c,363 :: 		delay_ms(50);
-	MOVLW      65
-	MOVWF      R12+0
-	MOVLW      238
-	MOVWF      R13+0
-L_leer_buffer63:
-	DECFSZ     R13+0, 1
-	GOTO       L_leer_buffer63
-	DECFSZ     R12+0, 1
-	GOTO       L_leer_buffer63
-	NOP
-;GSM_MAIN.c,364 :: 		memset(buffer_conversion,'0',2);
-	MOVLW      _buffer_conversion+0
-	MOVWF      FARG_memset_p1+0
-	MOVLW      48
-	MOVWF      FARG_memset_character+0
-	MOVLW      2
-	MOVWF      FARG_memset_n+0
-	MOVLW      0
-	MOVWF      FARG_memset_n+1
-	CALL       _memset+0
-;GSM_MAIN.c,365 :: 		cont_eeprom ++;
-	INCF       leer_buffer_cont_eeprom_L0+0, 1
-;GSM_MAIN.c,366 :: 		cont_buff =0;
-	CLRF       leer_buffer_cont_buff_L0+0
-;GSM_MAIN.c,367 :: 		}
-L_leer_buffer62:
-;GSM_MAIN.c,368 :: 		if (cont_eeprom == 14){
-	MOVF       leer_buffer_cont_eeprom_L0+0, 0
-	XORLW      14
-	BTFSS      STATUS+0, 2
-	GOTO       L_leer_buffer64
-;GSM_MAIN.c,369 :: 		cont_eeprom =10;
-	MOVLW      10
-	MOVWF      leer_buffer_cont_eeprom_L0+0
-;GSM_MAIN.c,371 :: 		}
-L_leer_buffer64:
-;GSM_MAIN.c,355 :: 		for (i=1 ; i < 12 ; i++) {
-	INCF       leer_buffer_i_L0+0, 1
-;GSM_MAIN.c,372 :: 		}
-	GOTO       L_leer_buffer56
-L_leer_buffer57:
-;GSM_MAIN.c,373 :: 		memset (buffer_uart,'0',lengt_buffer);
-	MOVLW      _buffer_uart+0
-	MOVWF      FARG_memset_p1+0
-	MOVLW      48
-	MOVWF      FARG_memset_character+0
-	MOVLW      20
-	MOVWF      FARG_memset_n+0
-	MOVLW      0
-	MOVWF      FARG_memset_n+1
-	CALL       _memset+0
-;GSM_MAIN.c,374 :: 		flag_fin = 0;
-	CLRF       _flag_fin+0
-;GSM_MAIN.c,375 :: 		}
-	GOTO       L_leer_buffer65
-L_leer_buffer55:
-;GSM_MAIN.c,377 :: 		valor = buscar_prefijo (buffer_uart,'_');
+	GOTO       L_buscar_comandos59
+;GSM_MAIN.c,359 :: 		guardar_datos_en_eeprom(indice);
+	MOVF       _indice+0, 0
+	MOVWF      FARG_guardar_datos_en_eeprom_indice+0
+	CALL       _guardar_datos_en_eeprom+0
+;GSM_MAIN.c,360 :: 		}
+	GOTO       L_buscar_comandos60
+L_buscar_comandos59:
+;GSM_MAIN.c,362 :: 		valor = buscar_prefijo (buffer_uart,'_');  // busca el prefijo asociado a uno de los comandos @luz_1* , @alarma_1*
 	MOVLW      _buffer_uart+0
 	MOVWF      FARG_buscar_prefijo_buffer+0
 	MOVLW      95
@@ -775,29 +754,56 @@ L_leer_buffer55:
 	CALL       _buscar_prefijo+0
 	MOVF       R0+0, 0
 	MOVWF      _valor+0
-;GSM_MAIN.c,378 :: 		mapear_caracteres (valor,buffer_uart);
+;GSM_MAIN.c,363 :: 		mapear_caracteres (valor,buffer_uart);
 	MOVF       R0+0, 0
 	MOVWF      FARG_mapear_caracteres_valor+0
 	MOVLW      _buffer_uart+0
 	MOVWF      FARG_mapear_caracteres_indice+0
 	CALL       _mapear_caracteres+0
-;GSM_MAIN.c,379 :: 		}
-L_leer_buffer65:
-;GSM_MAIN.c,381 :: 		}
-L_leer_buffer54:
-;GSM_MAIN.c,382 :: 		}
-L_leer_buffer52:
-;GSM_MAIN.c,384 :: 		}
+;GSM_MAIN.c,364 :: 		}
+L_buscar_comandos60:
+;GSM_MAIN.c,368 :: 		}
+L_end_buscar_comandos:
+	RETURN
+; end of _buscar_comandos
+
+_leer_buffer:
+
+;GSM_MAIN.c,369 :: 		unsigned char leer_buffer () {
+;GSM_MAIN.c,383 :: 		if (flag_fin ) {
+	MOVF       _flag_fin+0, 0
+	BTFSC      STATUS+0, 2
+	GOTO       L_leer_buffer61
+;GSM_MAIN.c,384 :: 		RCIF_BIT = 0;
+	BCF        RCIF_bit+0, BitPos(RCIF_bit+0)
+;GSM_MAIN.c,385 :: 		contador_de_caracteres = 0;
+	CLRF       _contador_de_caracteres+0
+;GSM_MAIN.c,387 :: 		if (buffer_uart[0]== ','){ validar_hora(buffer_uart);}
+	MOVF       _buffer_uart+0, 0
+	XORLW      44
+	BTFSS      STATUS+0, 2
+	GOTO       L_leer_buffer62
+	MOVLW      _buffer_uart+0
+	MOVWF      FARG_validar_hora_buffer+0
+	CALL       _validar_hora+0
+	GOTO       L_leer_buffer63
+L_leer_buffer62:
+;GSM_MAIN.c,389 :: 		else{ buscar_comandos();}
+	CALL       _buscar_comandos+0
+L_leer_buffer63:
+;GSM_MAIN.c,390 :: 		}
+L_leer_buffer61:
+;GSM_MAIN.c,392 :: 		}
 L_end_leer_buffer:
 	RETURN
 ; end of _leer_buffer
 
 _main:
 
-;GSM_MAIN.c,386 :: 		void main() {
-;GSM_MAIN.c,387 :: 		setup_28a();
+;GSM_MAIN.c,394 :: 		void main() {
+;GSM_MAIN.c,395 :: 		setup_28a();
 	CALL       _setup_28a+0
-;GSM_MAIN.c,389 :: 		}
+;GSM_MAIN.c,397 :: 		}
 L_end_main:
 	GOTO       $+0
 ; end of _main
@@ -811,56 +817,56 @@ _interrupt:
 	MOVWF      ___savePCLATH+0
 	CLRF       PCLATH+0
 
-;GSM_MAIN.c,391 :: 		void interrupt (){
-;GSM_MAIN.c,393 :: 		if (uart1_data_ready()){
+;GSM_MAIN.c,399 :: 		void interrupt (){
+;GSM_MAIN.c,401 :: 		if (uart1_data_ready()){
 	CALL       _UART1_Data_Ready+0
 	MOVF       R0+0, 0
 	BTFSC      STATUS+0, 2
-	GOTO       L_interrupt66
-;GSM_MAIN.c,394 :: 		dato =  uart1_read();
+	GOTO       L_interrupt64
+;GSM_MAIN.c,402 :: 		dato =  uart1_read();
 	CALL       _UART1_Read+0
 	MOVF       R0+0, 0
 	MOVWF      _dato+0
-;GSM_MAIN.c,395 :: 		asignar_flags(dato);
+;GSM_MAIN.c,403 :: 		asignar_flags(dato);
 	MOVF       R0+0, 0
 	MOVWF      FARG_asignar_flags_dato+0
 	CALL       _asignar_flags+0
-;GSM_MAIN.c,396 :: 		cargar_buffer(dato);
+;GSM_MAIN.c,404 :: 		cargar_buffer(dato);
 	MOVF       _dato+0, 0
 	MOVWF      FARG_cargar_buffer_dato+0
 	CALL       _cargar_buffer+0
-;GSM_MAIN.c,397 :: 		leer_buffer();
+;GSM_MAIN.c,405 :: 		leer_buffer();
 	CALL       _leer_buffer+0
-;GSM_MAIN.c,399 :: 		}
-L_interrupt66:
-;GSM_MAIN.c,401 :: 		if (tmr1if_bit){
+;GSM_MAIN.c,407 :: 		}
+L_interrupt64:
+;GSM_MAIN.c,409 :: 		if (tmr1if_bit){
 	BTFSS      TMR1IF_bit+0, BitPos(TMR1IF_bit+0)
-	GOTO       L_interrupt67
-;GSM_MAIN.c,402 :: 		tmr1if_bit =0;
+	GOTO       L_interrupt65
+;GSM_MAIN.c,410 :: 		tmr1if_bit =0;
 	BCF        TMR1IF_bit+0, BitPos(TMR1IF_bit+0)
-;GSM_MAIN.c,403 :: 		TMR1H = 0x00;
+;GSM_MAIN.c,411 :: 		TMR1H = 0x00;
 	CLRF       TMR1H+0
-;GSM_MAIN.c,404 :: 		TMR1L = 0x00;
+;GSM_MAIN.c,412 :: 		TMR1L = 0x00;
 	CLRF       TMR1L+0
-;GSM_MAIN.c,405 :: 		contador_timer++;
+;GSM_MAIN.c,413 :: 		contador_timer++;
 	INCF       _contador_timer+0, 1
-;GSM_MAIN.c,406 :: 		tmr1on_bit =1;
+;GSM_MAIN.c,414 :: 		tmr1on_bit =1;
 	BSF        TMR1ON_bit+0, BitPos(TMR1ON_bit+0)
-;GSM_MAIN.c,407 :: 		if (contador_timer == 4){
+;GSM_MAIN.c,415 :: 		if (contador_timer == 4){
 	MOVF       _contador_timer+0, 0
 	XORLW      4
 	BTFSS      STATUS+0, 2
-	GOTO       L_interrupt68
-;GSM_MAIN.c,408 :: 		contador_timer =0;
+	GOTO       L_interrupt66
+;GSM_MAIN.c,416 :: 		contador_timer =0;
 	CLRF       _contador_timer+0
-;GSM_MAIN.c,409 :: 		rb7_bit ^=1;
+;GSM_MAIN.c,417 :: 		rb7_bit ^=1;
 	MOVLW
 	XORWF      RB7_bit+0, 1
-;GSM_MAIN.c,412 :: 		}
-L_interrupt68:
-;GSM_MAIN.c,416 :: 		}
-L_interrupt67:
-;GSM_MAIN.c,417 :: 		}
+;GSM_MAIN.c,420 :: 		}
+L_interrupt66:
+;GSM_MAIN.c,424 :: 		}
+L_interrupt65:
+;GSM_MAIN.c,425 :: 		}
 L_end_interrupt:
 L__interrupt94:
 	MOVF       ___savePCLATH+0, 0

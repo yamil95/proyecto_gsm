@@ -39,6 +39,7 @@ brgh_bit
 buffer_conversion
 buffer_conversion_2
 buffer_uart
+buscar_comandos
 buscar_prefijo
 byte2double
 bytetohex
@@ -162,6 +163,7 @@ fsrptr
 get_fosc_khz
 gie
 gie_bit
+guardar_datos_en_eeprom
 hextobyte
 hextoint
 hextolong
