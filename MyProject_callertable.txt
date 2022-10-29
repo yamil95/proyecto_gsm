@@ -11,13 +11,11 @@ interrupt
 	leer_buffer
 		validar_hora
 			isdigit
-			UART1_Write_Text
-				UART1_Write
 			atoi
 				isdigit
 				Mul_16X16_U
-			UART1_Write
-			EEPROM_Read
+			verificar_hora_actual_con_eeprom
+				EEPROM_Read
 			memset
 		buscar_comandos
 			memchr

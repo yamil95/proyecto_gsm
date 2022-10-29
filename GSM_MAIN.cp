@@ -15,7 +15,6 @@ unsigned char comando_2 [] = {"alarma"};
 unsigned char *puntero_comando[3] = {comando_1,comando_2};
 unsigned char parametro ;
 unsigned char cont2=0;
-unsigned char activado =0;
 
 
 unsigned int conversion = 0;
@@ -23,6 +22,10 @@ unsigned char buffer_conversion_2[2];
 unsigned char contador_timer=0;
 unsigned char buffer_conversion[2];
 unsigned int conversion_2 [2] ;
+
+unsigned int conversion_10 =9;
+unsigned int conversion_20 =10;
+unsigned int *almacen[2]= {&conversion_10,&conversion_20};
 
 
 
@@ -44,7 +47,7 @@ void control_alarma(unsigned char valor_alarma){
 }
 
 unsigned char buscar_prefijo (unsigned char *buffer ,unsigned char caracter){
-#line 110 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
+#line 113 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
 unsigned char contador_de_letras = 0;
 
  while (buffer[contador_de_letras+1] != caracter){
@@ -84,7 +87,7 @@ void setup_28a(void){
 }
 
 void asignar_flags (unsigned char dato){
-#line 168 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
+#line 171 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
  if (contador_de_caracteres == 0 && (dato == '@' || dato == ',')){flag_inicio = 1; flag_fin =0; }
  if (contador_de_caracteres >=3 && (dato == '*' || dato == '-') ){flag_fin =1; flag_inicio = 0; }
 
@@ -92,13 +95,13 @@ void asignar_flags (unsigned char dato){
 }
 
 unsigned char convertir_string_a_numero (unsigned char caracter){
-#line 186 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
+#line 189 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
  if (caracter == 49)return 1;
  if (caracter == 48) return 0;
 }
 
 void cargar_buffer (unsigned char dato){
-#line 204 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
+#line 207 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
  if ( contador_de_caracteres <  21  && flag_inicio == 1 ){
 
  RCIF_BIT = 0;
@@ -111,13 +114,13 @@ void cargar_buffer (unsigned char dato){
  }
 
 }
-#line 220 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
+#line 223 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
 void (*ptr_funcion[2])(unsigned char )={control_luz,control_alarma};
 
 
 
 unsigned char mapear_caracteres (unsigned char valor, unsigned char *indice){
-#line 239 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
+#line 242 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
  for (i = 0 ; i < sizeof (puntero_comando); i++){
 
  for (x=0 ; x <valor ; x++){
@@ -142,17 +145,31 @@ unsigned char mapear_caracteres (unsigned char valor, unsigned char *indice){
  return 0;
 }
 
+unsigned char verificar_hora_actual_con_eeprom (unsigned char inicio){
 
+unsigned char contador_2 = 0;
+ for (i = 0 ; i<2 ; i++){
+
+ if (*almacen[i] == eeprom_read(inicio + i)) {
+ delay_ms(50);
+ contador_2++;
+
+ }
+ if (contador_2 == 2){return 1;}
+
+ }
+
+ return 0;
+
+}
 void validar_hora (unsigned char *buffer){
 
 unsigned char conversion_array [5] ={"xxxx"};
 unsigned char aux_conversion[3];
 unsigned char i =0;
 unsigned char contador =0;
-unsigned int conversion_1 =0;
-unsigned int conversion_2 =0;
-unsigned int almacen[2];
-unsigned char contador_2 = 0;
+
+
 
 
 
@@ -167,41 +184,14 @@ unsigned char contador_2 = 0;
 
  }
  }
- uart1_write_text(conversion_array);
- delay_ms(100);
  aux_conversion[0] = conversion_array[0];
  aux_conversion[1] = conversion_array [1];
- conversion_2 = atoi (&conversion_array[2]);
- conversion_1 = atoi (aux_conversion);
- almacen[0] = conversion_1;
- almacen[1] = conversion_2;
- uart1_write(almacen[0]);
- delay_ms(50);
- uart1_write(almacen[1]);
- delay_ms(50);
+ conversion_20 = atoi (&conversion_array[2]);
+ conversion_10 = atoi (aux_conversion);
 
- for (i = 0 ; i<2 ; i++){
+ if (verificar_hora_actual_con_eeprom(0) ==1 ){rb5_bit = 1 ; memset (buffer_uart,'0', 21 ); }
+ if (verificar_hora_actual_con_eeprom(2) ==1 ){rb5_bit = 0 ; memset (buffer_uart,'0', 21 ); }
 
- if (almacen[i] == eeprom_read(i)) {
- delay_ms(50);
- contador_2++;
-
- }
- uart1_write(contador_2);
- if (contador_2 == 1){rb5_bit = 1 ; memset (buffer_uart,'0', 21 ); contador_2 =0;}
- }
- contador_2=0;
- for (i = 0 ; i<2 ; i++){
-
- if (almacen[i] == eeprom_read(2+i)) {
- delay_ms(50);
- contador_2++;
-
- }
- uart1_write(contador_2);
- if (contador_2 == 1){rb5_bit = 0 ; memset (buffer_uart,'0', 21 ); contador_2 =0;}
- }
-#line 338 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
 }
 
 void guardar_datos_en_eeprom(unsigned char *indice){
@@ -251,7 +241,7 @@ void buscar_comandos (){
 
 }
 unsigned char leer_buffer () {
-#line 400 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
+#line 375 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
  if (flag_fin ) {
  RCIF_BIT = 0;
  contador_de_caracteres = 0;
@@ -264,6 +254,7 @@ unsigned char leer_buffer () {
 }
 
 void main() {
+
  setup_28a();
 
  }
@@ -284,7 +275,7 @@ void interrupt (){
  TMR1L = 0x00;
  contador_timer++;
  tmr1on_bit =1;
- if (contador_timer == 20){
+ if (contador_timer == 3){
  contador_timer =0;
  rb6_bit ^=1;
  uart1_write_text ("AT+CCLK?\r\n");

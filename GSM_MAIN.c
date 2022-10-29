@@ -61,7 +61,6 @@ unsigned char comando_2 [] = {"alarma"};
 unsigned char *puntero_comando[3] = {comando_1,comando_2};
 unsigned char parametro ;
 unsigned char cont2=0;
-unsigned char activado =0;
 
 //pruebas de concepto///
 unsigned int conversion = 0;
@@ -69,6 +68,10 @@ unsigned char buffer_conversion_2[2];
 unsigned char contador_timer=0;
 unsigned char buffer_conversion[2];
 unsigned int conversion_2 [2] ;
+
+unsigned int conversion_10 =9;
+unsigned int conversion_20 =10;
+unsigned int *almacen[2]= {&conversion_10,&conversion_20};
 
 
 //unsigned char resultado_comparacion ;
@@ -260,17 +263,31 @@ unsigned char  mapear_caracteres (unsigned char valor, unsigned char *indice){
              return 0;
 }
 
+unsigned char verificar_hora_actual_con_eeprom (unsigned char inicio){
 
+unsigned char contador_2 = 0;
+      for (i = 0 ; i<2 ; i++){
+
+                     if (*almacen[i] == eeprom_read(inicio + i)) {
+                        delay_ms(50);
+                        contador_2++;
+
+                     }
+                     if (contador_2 == 2){return 1;}
+
+                  }
+
+       return 0;
+
+}
 void validar_hora (unsigned char *buffer){
 
 unsigned char conversion_array [5] ={"xxxx"};
 unsigned char aux_conversion[3];
 unsigned char i =0;
 unsigned char contador =0;
-unsigned int conversion_1 =0;
-unsigned int conversion_2 =0;
-unsigned int almacen[2];
-unsigned char contador_2 = 0;
+
+
 
 
            
@@ -285,55 +302,13 @@ unsigned char contador_2 = 0;
 
                     }
                   }
-                  uart1_write_text(conversion_array);
-                  delay_ms(100);
                   aux_conversion[0] = conversion_array[0];
                   aux_conversion[1] = conversion_array [1];
-                  conversion_2 = atoi (&conversion_array[2]);
-                  conversion_1 = atoi (aux_conversion);
-                  almacen[0] = conversion_1;
-                  almacen[1] = conversion_2;
-                  uart1_write(almacen[0]);
-                  delay_ms(50);
-                  uart1_write(almacen[1]);
-                  delay_ms(50);
-                  
-                  for (i = 0 ; i<2 ; i++){
-                  
-                     if (almacen[i] == eeprom_read(i)) {
-                        delay_ms(50);
-                        contador_2++;
+                  conversion_20 = atoi (&conversion_array[2]);
+                  conversion_10 = atoi (aux_conversion);
 
-                     }
-                     uart1_write(contador_2);
-                     if (contador_2 == 1){rb5_bit = 1 ; memset (buffer_uart,'0',lengt_buffer); contador_2 =0;}
-                  }
-                  contador_2=0;
-                     for (i = 0 ; i<2 ; i++){
-
-                     if (almacen[i] == eeprom_read(2+i)) {
-                        delay_ms(50);
-                        contador_2++;
-
-                     }
-                     uart1_write(contador_2);
-                     if (contador_2 == 1){rb5_bit = 0 ; memset (buffer_uart,'0',lengt_buffer); contador_2 =0;}
-                  }
-
-                  
-
-
-
-                  
-
-                  
-
-
-              
-
-           
-
-
+                  if (verificar_hora_actual_con_eeprom(0) ==1 ){rb5_bit = 1 ; memset (buffer_uart,'0',lengt_buffer); }
+                  if (verificar_hora_actual_con_eeprom(2) ==1 ){rb5_bit = 0 ; memset (buffer_uart,'0',lengt_buffer); }
 
 }
 
@@ -342,7 +317,7 @@ unsigned char i;
 unsigned char cont_buff=0;
 unsigned char cont_eeprom =0;
 
-                //uart1_write_text(indice_time);
+
                   for (i=1 ; i < 13 ; i++) {
                      if (isdigit(indice [i]) && cont_buff <2 ){
                         buffer_conversion[cont_buff]=indice[i];
@@ -409,6 +384,7 @@ unsigned char leer_buffer () {
 }
 
 void main() {
+
      setup_28a();
 
      }
@@ -429,7 +405,7 @@ void interrupt (){
            TMR1L = 0x00;
            contador_timer++;
            tmr1on_bit =1;
-           if (contador_timer == 10){
+           if (contador_timer == 3){
               contador_timer =0;
               rb6_bit ^=1;
               uart1_write_text ("AT+CCLK?\r\n");

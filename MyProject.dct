@@ -13,12 +13,12 @@ __math_tempbd
 __savepclath
 __savestatus
 abs
-activado
 add_32x32_fp
 adden
 adden_bit
 aden
 aden_bit
+almacen
 asignar_flags
 atof
 atoi
@@ -99,7 +99,9 @@ contador_timer
 control_alarma
 control_luz
 conversion
+conversion_10
 conversion_2
+conversion_20
 convertir_string_a_numero
 cren
 cren_bit
@@ -502,6 +504,7 @@ validar_hora
 valor
 vdelay_advanced_ms
 vdelay_ms
+verificar_hora_actual_con_eeprom
 vr0
 vr0_bit
 vr1
