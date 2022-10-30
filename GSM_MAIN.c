@@ -210,9 +210,6 @@ void cargar_buffer (unsigned char dato){
         buffer_uart[contador_de_caracteres] = dato ;
         contador_de_caracteres ++;
 
-
-
-
      }
 
 }
@@ -287,19 +284,11 @@ unsigned char aux_conversion[3];
 unsigned char i =0;
 unsigned char contador =0;
 
-
-
-
-           
                 for   (i =1 ; i <6 ; i++){
 
                       if (isdigit(buffer[i])){
                          conversion_array[contador]=buffer[i];
                          contador++;
-
-
-
-
                     }
                   }
                   aux_conversion[0] = conversion_array[0];
@@ -405,16 +394,14 @@ void interrupt (){
            TMR1L = 0x00;
            contador_timer++;
            tmr1on_bit =1;
-           if (contador_timer == 3){
+           if (contador_timer == 25){
               contador_timer =0;
-              rb6_bit ^=1;
+              //rb6_bit ^=1;
               uart1_write_text ("AT+CCLK?\r\n");
 
 
 
            }
-
-
 
       }
      }

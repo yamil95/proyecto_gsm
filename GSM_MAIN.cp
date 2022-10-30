@@ -108,19 +108,16 @@ void cargar_buffer (unsigned char dato){
  buffer_uart[contador_de_caracteres] = dato ;
  contador_de_caracteres ++;
 
-
-
-
  }
 
 }
-#line 223 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
+#line 220 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
 void (*ptr_funcion[2])(unsigned char )={control_luz,control_alarma};
 
 
 
 unsigned char mapear_caracteres (unsigned char valor, unsigned char *indice){
-#line 242 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
+#line 239 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
  for (i = 0 ; i < sizeof (puntero_comando); i++){
 
  for (x=0 ; x <valor ; x++){
@@ -169,19 +166,11 @@ unsigned char aux_conversion[3];
 unsigned char i =0;
 unsigned char contador =0;
 
-
-
-
-
  for (i =1 ; i <6 ; i++){
 
  if (isdigit(buffer[i])){
  conversion_array[contador]=buffer[i];
  contador++;
-
-
-
-
  }
  }
  aux_conversion[0] = conversion_array[0];
@@ -241,7 +230,7 @@ void buscar_comandos (){
 
 }
 unsigned char leer_buffer () {
-#line 375 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
+#line 364 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
  if (flag_fin ) {
  RCIF_BIT = 0;
  contador_de_caracteres = 0;
@@ -275,16 +264,14 @@ void interrupt (){
  TMR1L = 0x00;
  contador_timer++;
  tmr1on_bit =1;
- if (contador_timer == 3){
+ if (contador_timer == 25){
  contador_timer =0;
- rb6_bit ^=1;
+
  uart1_write_text ("AT+CCLK?\r\n");
 
 
 
  }
-
-
 
  }
  }
