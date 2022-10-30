@@ -68,7 +68,7 @@ void setup_28a(void){
 
 void asignar_flags (unsigned char dato){
 #line 151 "C:/Users/feyam/Desktop/gsm/GSM_MAIN.c"
- if (contador_de_caracteres == 0 && dato == '@'){flag_inicio = 1; uart1_write(dato); }
+ if (contador_de_caracteres == 0 && dato == '@'){flag_inicio = 1; flag_fin = 0; }
  if (contador_de_caracteres >=3 && dato == '*'){flag_fin =1; flag_inicio = 0;}
 
 
@@ -129,9 +129,9 @@ unsigned char leer_buffer () {
  if (flag_fin ) {
  RCIF_BIT = 0;
  contador_de_caracteres = 0;
- indice = memchr (buffer_uart,'@', 10 );
- valor = buscar_prefijo (indice,'_');
- mapear_caracteres (valor,indice);
+
+ valor = buscar_prefijo (buffer_uart,'_');
+ mapear_caracteres (valor,buffer_uart);
 
 
 
@@ -147,9 +147,12 @@ void main() {
 
 void interrupt (){
 
+ if (uart1_data_ready()){
  dato = uart1_read();
 
  asignar_flags(dato);
  cargar_buffer(dato);
  leer_buffer();
  }
+
+}

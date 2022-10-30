@@ -5,12 +5,11 @@ main
 		UART1_Init
 		EEPROM_Read
 interrupt
+	UART1_Data_Ready
 	UART1_Read
 	asignar_flags
-		UART1_Write
 	cargar_buffer
 	leer_buffer
-		memchr
 		buscar_prefijo
 		mapear_caracteres
 			convertir_string_a_numero

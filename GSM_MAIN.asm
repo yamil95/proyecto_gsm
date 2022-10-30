@@ -4,12 +4,12 @@ _control_luz:
 ;GSM_MAIN.c,72 :: 		void control_luz(unsigned char valor_luz){
 ;GSM_MAIN.c,74 :: 		rb5_bit = valor_luz;
 	BTFSC      FARG_control_luz_valor_luz+0, 0
-	GOTO       L__control_luz26
-	BCF        RB5_bit+0, BitPos(RB5_bit+0)
 	GOTO       L__control_luz27
-L__control_luz26:
-	BSF        RB5_bit+0, BitPos(RB5_bit+0)
+	BCF        RB5_bit+0, BitPos(RB5_bit+0)
+	GOTO       L__control_luz28
 L__control_luz27:
+	BSF        RB5_bit+0, BitPos(RB5_bit+0)
+L__control_luz28:
 ;GSM_MAIN.c,76 :: 		}
 L_end_control_luz:
 	RETURN
@@ -20,12 +20,12 @@ _control_alarma:
 ;GSM_MAIN.c,77 :: 		void control_alarma(unsigned char valor_alarma){
 ;GSM_MAIN.c,79 :: 		rb4_bit = valor_alarma;
 	BTFSC      FARG_control_alarma_valor_alarma+0, 0
-	GOTO       L__control_alarma29
-	BCF        RB4_bit+0, BitPos(RB4_bit+0)
 	GOTO       L__control_alarma30
-L__control_alarma29:
-	BSF        RB4_bit+0, BitPos(RB4_bit+0)
+	BCF        RB4_bit+0, BitPos(RB4_bit+0)
+	GOTO       L__control_alarma31
 L__control_alarma30:
+	BSF        RB4_bit+0, BitPos(RB4_bit+0)
+L__control_alarma31:
 ;GSM_MAIN.c,80 :: 		}
 L_end_control_alarma:
 	RETURN
@@ -94,23 +94,23 @@ _setup_28a:
 	CLRF       FARG_EEPROM_Read_Address+0
 	CALL       _EEPROM_Read+0
 	BTFSC      R0+0, 0
-	GOTO       L__setup_28a33
-	BCF        RB5_bit+0, BitPos(RB5_bit+0)
 	GOTO       L__setup_28a34
-L__setup_28a33:
-	BSF        RB5_bit+0, BitPos(RB5_bit+0)
+	BCF        RB5_bit+0, BitPos(RB5_bit+0)
+	GOTO       L__setup_28a35
 L__setup_28a34:
+	BSF        RB5_bit+0, BitPos(RB5_bit+0)
+L__setup_28a35:
 ;GSM_MAIN.c,122 :: 		rb4_bit = eeprom_read(1);
 	MOVLW      1
 	MOVWF      FARG_EEPROM_Read_Address+0
 	CALL       _EEPROM_Read+0
 	BTFSC      R0+0, 0
-	GOTO       L__setup_28a35
-	BCF        RB4_bit+0, BitPos(RB4_bit+0)
 	GOTO       L__setup_28a36
-L__setup_28a35:
-	BSF        RB4_bit+0, BitPos(RB4_bit+0)
+	BCF        RB4_bit+0, BitPos(RB4_bit+0)
+	GOTO       L__setup_28a37
 L__setup_28a36:
+	BSF        RB4_bit+0, BitPos(RB4_bit+0)
+L__setup_28a37:
 ;GSM_MAIN.c,129 :: 		}
 L_end_setup_28a:
 	RETURN
@@ -119,7 +119,7 @@ L_end_setup_28a:
 _asignar_flags:
 
 ;GSM_MAIN.c,131 :: 		void asignar_flags (unsigned char dato){
-;GSM_MAIN.c,151 :: 		if (contador_de_caracteres == 0 && dato == '@'){flag_inicio = 1; uart1_write(dato); }
+;GSM_MAIN.c,151 :: 		if (contador_de_caracteres == 0 && dato == '@'){flag_inicio = 1; flag_fin = 0; }
 	MOVF       _contador_de_caracteres+0, 0
 	XORLW      0
 	BTFSS      STATUS+0, 2
@@ -128,12 +128,10 @@ _asignar_flags:
 	XORLW      64
 	BTFSS      STATUS+0, 2
 	GOTO       L_asignar_flags4
-L__asignar_flags23:
+L__asignar_flags24:
 	MOVLW      1
 	MOVWF      _flag_inicio+0
-	MOVF       FARG_asignar_flags_dato+0, 0
-	MOVWF      FARG_UART1_Write_data_+0
-	CALL       _UART1_Write+0
+	CLRF       _flag_fin+0
 L_asignar_flags4:
 ;GSM_MAIN.c,152 :: 		if (contador_de_caracteres >=3 && dato == '*'){flag_fin =1; flag_inicio = 0;}
 	MOVLW      3
@@ -144,7 +142,7 @@ L_asignar_flags4:
 	XORLW      42
 	BTFSS      STATUS+0, 2
 	GOTO       L_asignar_flags7
-L__asignar_flags22:
+L__asignar_flags23:
 	MOVLW      1
 	MOVWF      _flag_fin+0
 	CLRF       _flag_inicio+0
@@ -191,7 +189,7 @@ _cargar_buffer:
 	XORLW      1
 	BTFSS      STATUS+0, 2
 	GOTO       L_cargar_buffer12
-L__cargar_buffer24:
+L__cargar_buffer25:
 ;GSM_MAIN.c,189 :: 		RCIF_BIT = 0;
 	BCF        RCIF_bit+0, BitPos(RCIF_bit+0)
 ;GSM_MAIN.c,190 :: 		buffer_uart[contador_de_caracteres] = dato ;
@@ -362,30 +360,18 @@ _leer_buffer:
 	BCF        RCIF_bit+0, BitPos(RCIF_bit+0)
 ;GSM_MAIN.c,261 :: 		contador_de_caracteres = 0;
 	CLRF       _contador_de_caracteres+0
-;GSM_MAIN.c,262 :: 		indice = memchr (buffer_uart,'@',lengt_buffer);
+;GSM_MAIN.c,263 :: 		valor = buscar_prefijo (buffer_uart,'_');
 	MOVLW      _buffer_uart+0
-	MOVWF      FARG_memchr_p+0
-	MOVLW      64
-	MOVWF      FARG_memchr_n+0
-	MOVLW      10
-	MOVWF      FARG_memchr_v+0
-	MOVLW      0
-	MOVWF      FARG_memchr_v+1
-	CALL       _memchr+0
-	MOVF       R0+0, 0
-	MOVWF      _indice+0
-;GSM_MAIN.c,263 :: 		valor = buscar_prefijo (indice,'_');
-	MOVF       R0+0, 0
 	MOVWF      FARG_buscar_prefijo_buffer+0
 	MOVLW      95
 	MOVWF      FARG_buscar_prefijo_caracter+0
 	CALL       _buscar_prefijo+0
 	MOVF       R0+0, 0
 	MOVWF      _valor+0
-;GSM_MAIN.c,264 :: 		mapear_caracteres (valor,indice);
+;GSM_MAIN.c,264 :: 		mapear_caracteres (valor,buffer_uart);
 	MOVF       R0+0, 0
 	MOVWF      FARG_mapear_caracteres_valor+0
-	MOVF       _indice+0, 0
+	MOVLW      _buffer_uart+0
 	MOVWF      FARG_mapear_caracteres_indice+0
 	CALL       _mapear_caracteres+0
 ;GSM_MAIN.c,268 :: 		}
@@ -415,23 +401,30 @@ _interrupt:
 	CLRF       PCLATH+0
 
 ;GSM_MAIN.c,278 :: 		void interrupt (){
-;GSM_MAIN.c,280 :: 		dato =  uart1_read();
+;GSM_MAIN.c,280 :: 		if (uart1_data_ready()){
+	CALL       _UART1_Data_Ready+0
+	MOVF       R0+0, 0
+	BTFSC      STATUS+0, 2
+	GOTO       L_interrupt22
+;GSM_MAIN.c,281 :: 		dato =  uart1_read();
 	CALL       _UART1_Read+0
 	MOVF       R0+0, 0
 	MOVWF      _dato+0
-;GSM_MAIN.c,282 :: 		asignar_flags(dato);
+;GSM_MAIN.c,283 :: 		asignar_flags(dato);
 	MOVF       R0+0, 0
 	MOVWF      FARG_asignar_flags_dato+0
 	CALL       _asignar_flags+0
-;GSM_MAIN.c,283 :: 		cargar_buffer(dato);
+;GSM_MAIN.c,284 :: 		cargar_buffer(dato);
 	MOVF       _dato+0, 0
 	MOVWF      FARG_cargar_buffer_dato+0
 	CALL       _cargar_buffer+0
-;GSM_MAIN.c,284 :: 		leer_buffer();
+;GSM_MAIN.c,285 :: 		leer_buffer();
 	CALL       _leer_buffer+0
-;GSM_MAIN.c,285 :: 		}
+;GSM_MAIN.c,286 :: 		}
+L_interrupt22:
+;GSM_MAIN.c,288 :: 		}
 L_end_interrupt:
-L__interrupt44:
+L__interrupt45:
 	MOVF       ___savePCLATH+0, 0
 	MOVWF      PCLATH+0
 	SWAPF      ___saveSTATUS+0, 0

@@ -55,7 +55,8 @@ Count=2
 0=mikroE Libraries
 1=System Libraries
 131=EEPROM
-Count=3
+304=UART
+Count=4
 [PROGRAMMER_TYPE]
 Value=mikroE mikroProg
 [CODEGRIP_OPTIONS]
